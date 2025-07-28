@@ -35,6 +35,54 @@
             visibility: visible;
             transform: scale(1);
         }
+        
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .hero-text {
+                text-align: center;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            .hero-buttons a {
+                width: 100%;
+                text-align: center;
+            }
+            .skill-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .skill-stars {
+                margin-left: 0 !important;
+            }
+            .contact-info {
+                margin-bottom: 2rem;
+            }
+            .admin-table {
+                font-size: 0.875rem;
+            }
+            .modal-content {
+                margin: 1rem;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.75rem;
+            }
+            .about-stats {
+                grid-template-columns: repeat(1, 1fr) !important;
+            }
+            .footer-grid {
+                grid-template-columns: repeat(1, 1fr) !important;
+                gap: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body class="font-sans bg-gray-50">
@@ -79,21 +127,21 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="gradient-bg text-white py-20">
+    <section id="home" class="gradient-bg text-white py-12 sm:py-16 lg:py-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Hi, I'm <span class="text-yellow-300">Alex</span></h1>
-                    <h2 class="text-2xl md:text-3xl font-semibold mb-6">Software Engineer & Multimedia Specialist</h2>
-                    <p class="text-lg mb-8">Bridging the gap between code and creativity to build immersive digital experiences.</p>
-                    <div class="flex space-x-4">
-                        <a href="#projects" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">View Work</a>
-                        <a href="#contact" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition duration-300">Contact Me</a>
+                <div class="md:w-1/2 mb-8 md:mb-0 hero-text">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Hi, I'm <span class="text-yellow-300">Tefo</span></h1>
+                    <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6">Software Engineer & Multimedia Specialist</h2>
+                    <p class="text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed">Bridging the gap between code and creativity to build immersive digital experiences.</p>
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 hero-buttons">
+                        <a href="#projects" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300 text-center">View Work</a>
+                        <a href="#contact" class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition duration-300 text-center">Contact Me</a>
                     </div>
                 </div>
-                <div class="md:w-1/2 flex justify-center">
-                    <div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white shadow-xl">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80" 
+                <div class="md:w-1/2 flex justify-center mt-8 md:mt-0">
+                    <div class="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white shadow-xl">
+                        <img src="images/Anime Style Self Portrait (2).jpg" 
                              alt="Profile" class="w-full h-full object-cover">
                     </div>
                 </div>
@@ -102,55 +150,55 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="py-20 bg-white">
+    <section id="about" class="py-12 sm:py-16 lg:py-20 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12">About Me</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">About Me</h2>
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/3 mb-8 md:mb-0 flex flex-col items-center">
-                    <div class="w-64 h-80 rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition duration-300">
-                        <a href="https://example.com/path-to-full-cv.jpg" target="_blank" rel="noopener noreferrer">
-                            <img src="https://example.com/path-to-cv-thumbnail.jpg" 
+                    <div class="w-48 h-60 sm:w-56 sm:h-72 md:w-64 md:h-80 rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition duration-300">
+                        <a href="images/AT4CV_page.jpg" target="_blank" rel="noopener noreferrer">
+                            <img src="images/AT4CV_page.jpg" 
                                  alt="Curriculum Vitae" class="w-full h-full object-cover">
                         </a>
                     </div>
-                    <a href="https://example.com/path-to-cv.pdf" download 
-                       class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+                    <a href="documents/AT4CV.pdf" download 
+                       class="mt-4 bg-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 text-sm sm:text-base">
                         <i class="fas fa-download mr-2"></i> Download CV
                     </a>
                 </div>
-                <div class="md:w-2/3 md:pl-12">
-                    <h3 class="text-2xl font-semibold mb-4">From Pixels to Code</h3>
-                    <p class="text-gray-700 mb-4">
+                <div class="md:w-2/3 md:pl-8 lg:pl-12">
+                    <h3 class="text-xl sm:text-2xl font-semibold mb-4">From Pixels to Code</h3>
+                    <p class="text-gray-700 mb-4 leading-relaxed text-sm sm:text-base">
                         With a degree in Multimedia Design and a passion for software engineering, I bring a unique perspective to every project. 
                         My journey began with creating visual content and evolved into building full-stack applications that combine aesthetic appeal 
                         with robust functionality.
                     </p>
-                    <p class="text-gray-700 mb-6">
+                    <p class="text-gray-700 mb-6 leading-relaxed text-sm sm:text-base">
                         Over the past 5 years, I've worked with startups and established companies to deliver digital solutions that engage users 
                         and solve real-world problems. My multimedia background gives me an edge in UI/UX design, while my engineering skills 
                         ensure the technical execution is flawless.
                     </p>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div class="bg-gray-100 p-4 rounded-lg">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 about-stats">
+                        <div class="bg-gray-100 p-3 sm:p-4 rounded-lg">
                             <div class="text-purple-600 mb-2">
-                                <i class="fas fa-graduation-cap text-2xl"></i>
+                                <i class="fas fa-graduation-cap text-xl sm:text-2xl"></i>
                             </div>
-                            <h4 class="font-semibold">Education</h4>
-                            <p class="text-sm text-gray-600">BSc in Multimedia Design</p>
+                            <h4 class="font-semibold text-sm sm:text-base">Education</h4>
+                            <p class="text-xs sm:text-sm text-gray-600">BSc in Multimedia Design</p>
                         </div>
-                        <div class="bg-gray-100 p-4 rounded-lg">
+                        <div class="bg-gray-100 p-3 sm:p-4 rounded-lg">
                             <div class="text-purple-600 mb-2">
-                                <i class="fas fa-briefcase text-2xl"></i>
+                                <i class="fas fa-briefcase text-xl sm:text-2xl"></i>
                             </div>
-                            <h4 class="font-semibold">Experience</h4>
-                            <p class="text-sm text-gray-600">5+ Years in Development</p>
+                            <h4 class="font-semibold text-sm sm:text-base">Experience</h4>
+                            <p class="text-xs sm:text-sm text-gray-600">5+ Years in Development</p>
                         </div>
-                        <div class="bg-gray-100 p-4 rounded-lg">
+                        <div class="bg-gray-100 p-3 sm:p-4 rounded-lg">
                             <div class="text-purple-600 mb-2">
-                                <i class="fas fa-project-diagram text-2xl"></i>
+                                <i class="fas fa-project-diagram text-xl sm:text-2xl"></i>
                             </div>
-                            <h4 class="font-semibold">Projects</h4>
-                            <p class="text-sm text-gray-600">30+ Completed</p>
+                            <h4 class="font-semibold text-sm sm:text-base">Projects</h4>
+                            <p class="text-xs sm:text-sm text-gray-600">30+ Completed</p>
                         </div>
                     </div>
                 </div>
@@ -159,135 +207,79 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="py-20 bg-gray-50">
+    <section id="skills" class="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12">My Skills</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">My Skills</h2>
+            <div class="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
                 <div>
-                    <h3 class="text-xl font-semibold mb-6">Technical Skills</h3>
-                    <div class="space-y-6">
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">JavaScript/TypeScript</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star-half-alt text-yellow-400"></i>
-                            </div>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Technical Skills</h3>
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">JavaScript/TypeScript</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">React/Next.js</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">React/Next.js</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">Node.js/Express</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">Node.js/Express</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">Python/Django</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">Python/Django</span>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-xl font-semibold mb-6">Multimedia Skills</h3>
-                    <div class="space-y-6">
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">UI/UX Design</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6">Multimedia Skills</h3>
+                    <div class="space-y-4 sm:space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">UI/UX Design</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">Graphic Design</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">Graphic Design</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">Video Editing</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star-half-alt text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">Video Editing</span>
                         </div>
-                        <div class="flex items-center mb-2">
-                            <span class="font-medium w-40">3D Modeling</span>
-                            <div class="flex ml-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                                <i class="far fa-star text-yellow-400"></i>
-                            </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center mb-2 skill-item">
+                            <span class="font-medium w-full sm:w-40 text-sm sm:text-base">3D Modeling</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mt-12">
-                <h3 class="text-xl font-semibold mb-6 text-center">Tools & Technologies</h3>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-react text-3xl text-blue-500 mr-2"></i>
-                        <span>React</span>
+            <div class="mt-8 sm:mt-12">
+                <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-center">Tools & Technologies</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 tools-grid">
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-react text-2xl sm:text-3xl text-blue-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">React</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-node-js text-3xl text-green-500 mr-2"></i>
-                        <span>Node.js</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-node-js text-2xl sm:text-3xl text-green-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Node.js</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-python text-3xl text-yellow-500 mr-2"></i>
-                        <span>Python</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-python text-2xl sm:text-3xl text-yellow-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Python</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fas fa-database text-3xl text-blue-400 mr-2"></i>
-                        <span>MongoDB</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fas fa-database text-2xl sm:text-3xl text-blue-400 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">MongoDB</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-adobe text-3xl text-red-500 mr-2"></i>
-                        <span>Adobe CC</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-adobe text-2xl sm:text-3xl text-red-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Adobe CC</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fas fa-cube text-3xl text-purple-500 mr-2"></i>
-                        <span>Blender</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fas fa-cube text-2xl sm:text-3xl text-purple-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Blender</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-git-alt text-3xl text-orange-500 mr-2"></i>
-                        <span>Git</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-git-alt text-2xl sm:text-3xl text-orange-500 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Git</span>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-md flex items-center">
-                        <i class="fab fa-docker text-3xl text-blue-300 mr-2"></i>
-                        <span>Docker</span>
+                    <div class="bg-white p-3 sm:p-4 rounded-lg shadow-md flex flex-col sm:flex-row items-center text-center sm:text-left">
+                        <i class="fab fa-docker text-2xl sm:text-3xl text-blue-300 mb-1 sm:mb-0 sm:mr-2"></i>
+                        <span class="text-sm sm:text-base">Docker</span>
                     </div>
                 </div>
             </div>
@@ -295,10 +287,10 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 bg-white">
+    <section id="projects" class="py-12 sm:py-16 lg:py-20 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12">My Projects</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="projectsContainer">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">My Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" id="projectsContainer">
                 <!-- Projects will be loaded here dynamically -->
                 <div class="project-card bg-white rounded-lg overflow-hidden shadow-lg transition duration-300">
                     <div class="h-48 overflow-hidden">
@@ -374,13 +366,13 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gray-50">
+    <section id="contact" class="py-12 sm:py-16 lg:py-20 bg-gray-50">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12">Get In Touch</h2>
-            <div class="flex flex-col md:flex-row">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h3 class="text-2xl font-semibold mb-6">Contact Information</h3>
-                    <p class="text-gray-700 mb-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12">Get In Touch</h2>
+            <div class="flex flex-col md:flex-row gap-8 lg:gap-12">
+                <div class="md:w-1/2 contact-info">
+                    <h3 class="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Contact Information</h3>
+                    <p class="text-gray-700 mb-6 sm:mb-8 leading-relaxed text-sm sm:text-base">
                         Have a project in mind or want to discuss potential opportunities? 
                         Feel free to reach out through any of the channels below.
                     </p>
@@ -391,7 +383,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold">Email</h4>
-                                <p class="text-gray-600">contact@devportfolio.com</p>
+                                <p class="text-gray-600">teforamokate48@gmail.com</p>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -400,7 +392,7 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold">Phone</h4>
-                                <p class="text-gray-600">+1 (555) 123-4567</p>
+                                <p class="text-gray-600">+267 72254856</p>
                             </div>
                         </div>
                         <div class="flex items-center">
@@ -409,30 +401,30 @@
                             </div>
                             <div>
                                 <h4 class="font-semibold">Location</h4>
-                                <p class="text-gray-600">San Francisco, CA</p>
+                                <p class="text-gray-600">Gaborone, Botswana</p>
                             </div>
                         </div>
                     </div>
                     <div class="mt-8">
                         <h4 class="font-semibold mb-4">Connect with me</h4>
                         <div class="flex space-x-4">
-                            <a href="#" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
+                            <a href="https://www.linkedin.com/in/tefo-ramokate-aa9b51301/?trk=opento_sprofile_details" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
+                            <a href="https://github.com/AtreusTefo" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
                                 <i class="fab fa-github"></i>
                             </a>
-                            <a href="#" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
-                                <i class="fab fa-twitter"></i>
+                            <a href="https://www.facebook.com/ATREUST4RAMOKATE/" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
+                                <i class="fab fa-facebook"></i>
                             </a>
-                            <a href="#" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
-                                <i class="fab fa-dribbble"></i>
+                            <a href="https://www.pinterest.com/Tefo_Ramokate/" class="bg-gray-200 p-3 rounded-full hover:bg-purple-600 hover:text-white transition duration-300">
+                                <i class="fab fa-pinterest"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="md:w-1/2 md:pl-12">
-                    <form id="contactForm" class="bg-white p-8 rounded-lg shadow-md">
+                <div class="md:w-1/2">
+                    <form id="contactForm" class="bg-white p-6 sm:p-8 rounded-lg shadow-md">
                         <div class="mb-6">
                             <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
                             <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" required>
@@ -459,16 +451,16 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
+    <footer class="bg-gray-900 text-white py-8 sm:py-12">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between">
-                <div class="mb-8 md:mb-0">
-                    <h3 class="text-2xl font-bold mb-4">DevPortfolio</h3>
-                    <p class="text-gray-400 max-w-md">
+            <div class="flex flex-col md:flex-row justify-between gap-8">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-xl sm:text-2xl font-bold mb-4">DevPortfolio</h3>
+                    <p class="text-gray-400 max-w-md text-sm sm:text-base leading-relaxed">
                         Creating digital experiences that combine technical excellence with creative vision.
                     </p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 footer-grid">
                     <div>
                         <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
                         <ul class="space-y-2">
@@ -482,26 +474,26 @@
                     <div>
                         <h4 class="text-lg font-semibold mb-4">Legal</h4>
                         <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a></li>
-                            <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Cookie Policy</a></li>
+                            <li><a href="privacy-policy.html" class="text-gray-400 hover:text-white transition duration-300">Privacy Policy</a></li>
+                            <li><a href="terms-of-service.html" class="text-gray-400 hover:text-white transition duration-300">Terms of Service</a></li>
+                            <li><a href="cookie-policy.html" class="text-gray-400 hover:text-white transition duration-300">Cookie Policy</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-400 mb-4 md:mb-0">© 2023 DevPortfolio. All rights reserved.</p>
+                <p class="text-gray-400 mb-4 md:mb-0">© 2021 DevPortfolio. All rights reserved.</p>
                 <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                    <a href="https://www.facebook.com/ATREUST4RAMOKATE/" class="text-gray-400 hover:text-white transition duration-300">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-twitter"></i>
+                    <a href="https://www.pinterest.com/Tefo_Ramokate/" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-pinterest"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
-                        <i class="fab fa-instagram"></i>
+                    <a href="https://github.com/Tefo-Ramokate" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-github"></i>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                    <a href="https://www.linkedin.com/in/tefo-ramokate-a8b8b8b8/" class="text-gray-400 hover:text-white transition duration-300">
                         <i class="fab fa-linkedin-in"></i>
                     </a>
                 </div>
