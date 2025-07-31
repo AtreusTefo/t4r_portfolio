@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "npx live-server --port=3000 --open=/index.html",
     "start": "npx live-server --port=3000 --open=/index.html",
-    "build": "echo 'Build complete - static files ready for deployment'"
+    "build": "echo 'Static portfolio build complete - ready for Netlify deployment'",
+    "preview": "npx live-server --port=8080 --no-browser",
+    "deploy": "echo 'Deploy to Netlify: git push origin main'"
   },
   "keywords": [
     "portfolio",
@@ -19,5 +21,8 @@
   "license": "MIT",
   "devDependencies": {
     "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.53.0"
   }
 }

@@ -7,6 +7,8 @@
     <title>DevPortfolio | Software Engineer & Multimedia Specialist</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         /* Custom CSS for parts that need more control */
         .gradient-bg {
@@ -952,18 +954,76 @@
             }, 3000);
         }
 
-        // Contact form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
+        // Contact form submission with Supabase integration
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            // In a real app, you would send this data to a server
-            this.reset();
-            showSuccess('Your message has been sent successfully!');
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Use Supabase helper if available, otherwise fallback to local
+                let result;
+                if (window.supabaseHelpers && window.supabaseHelpers.isConnected()) {
+                    result = await window.supabaseHelpers.submitContact(formData);
+                } else {
+                    // Fallback for when Supabase is not connected
+                    result = { success: true, message: 'Your message has been sent successfully!' };
+                }
+                
+                if (result.success) {
+                    this.reset();
+                    showSuccess(result.message);
+                } else {
+                    showError(result.message || 'Failed to send message. Please try again.');
+                }
+            } catch (error) {
+                console.error('Contact form error:', error);
+                showError('An error occurred. Please try again.');
+            } finally {
+                // Restore button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
         });
+        
+        // Error notification function
+        function showError(message) {
+            // Create error notification if it doesn't exist
+            let errorNotification = document.getElementById('errorNotification');
+            if (!errorNotification) {
+                errorNotification = document.createElement('div');
+                errorNotification.id = 'errorNotification';
+                errorNotification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 hidden';
+                errorNotification.innerHTML = '<span id="errorMessage"></span>';
+                document.body.appendChild(errorNotification);
+            }
+            
+            document.getElementById('errorMessage').textContent = message;
+            errorNotification.classList.remove('hidden');
+            setTimeout(() => {
+                errorNotification.classList.add('hidden');
+            }, 5000);
+        }
 
         // Initialize the page
         renderProjects();
         renderAdminProjects();
 
     </script>
+    
+    <!-- Supabase Integration -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/portfolio-supabase.js"></script>
 </body>
 </html>

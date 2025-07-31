@@ -1,0 +1,11 @@
+# Netlify redirects file
+# This file handles client-side routing and URL redirects
+
+# Clean URL redirects
+/projects   /projects.html   200
+/privacy    /privacy-policy.html   200
+/terms      /terms-of-service.html   200
+/cookies    /cookie-policy.html   200
+
+# Fallback for SPA-like behavior (optional)
+# /*    /index.html   200
