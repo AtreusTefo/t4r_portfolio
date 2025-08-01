@@ -114,6 +114,11 @@ async function loadProjectsFromSupabase() {
                 codeLink: project.code_link || '#'
             }));
             
+            // Initialize window.projects if it doesn't exist
+            if (!window.projects || !Array.isArray(window.projects)) {
+                window.projects = [];
+            }
+            
             // Merge with existing projects or replace them
             window.projects = [...supabaseProjects, ...window.projects.filter(p => !supabaseProjects.find(sp => sp.id === p.id))];
             
