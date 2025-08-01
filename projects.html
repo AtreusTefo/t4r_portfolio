@@ -230,6 +230,97 @@
                 text-align: center;
             }
         }
+
+        /* Masonry Grid Styles */
+        .masonry-grid {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+
+        .masonry-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .masonry-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .masonry-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .masonry-item:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+
+        .masonry-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .masonry-item-content {
+            padding: 12px 16px;
+        }
+
+        .masonry-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray-900);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .masonry-item-type {
+            font-size: 12px;
+            color: var(--text-gray-600);
+            margin-top: 4px;
+            text-transform: capitalize;
+        }
+
+        /* Responsive masonry grid */
+        @media (max-width: 1024px) {
+            .masonry-grid {
+                gap: 12px;
+            }
+            .masonry-column {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .masonry-grid {
+                gap: 8px;
+            }
+            .masonry-column {
+                gap: 8px;
+            }
+            .masonry-item-content {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .masonry-grid {
+                flex-direction: column;
+            }
+            .masonry-column {
+                width: 100%;
+            }
+        }
         
         @media (max-width: 640px) {
             .projects-grid {
@@ -295,7 +386,6 @@
             
             <!-- Filter Buttons -->
             <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-12 project-filters">
-                <button class="filter-btn bg-purple-600 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition duration-300 filter-button" data-filter="all">All Projects</button>
                 <button class="filter-btn bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 rounded-lg font-semibold hover:bg-purple-600 hover:text-white transition duration-300 filter-button" data-filter="software">Software Engineering</button>
                 <button class="filter-btn bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 rounded-lg font-semibold hover:bg-purple-600 hover:text-white transition duration-300 filter-button" data-filter="multimedia">Multimedia</button>
             </div>
@@ -376,9 +466,8 @@
                 demoLink: "#",
                 codeLink: "#"
             },
-
             {
-                id: 3,
+                id: 2,
                 title: "E-commerce Platform",
                 description: "A full-featured online store with payment integration and admin dashboard.",
                 technologies: ["Next.js", "Stripe", "MongoDB"],
@@ -389,12 +478,448 @@
             }
         ];
 
-        let currentFilter = 'all';
+        // Multimedia content for Pinterest-style masonry grid
+        let multimediaContent = [
+            {
+                id: 'mm1',
+                title: 'Anime Style Self Portrait',
+                image: 'images/Multimedia/Anime Style Self Portrait (2).jpg',
+                aspectRatio: 1.2,
+                category: 'multimedia',
+                type: 'digital-art'
+            },
+            {
+                id: 'mm2',
+                title: 'BESF Design',
+                image: 'images/Multimedia/BESF.jpg',
+                aspectRatio: 0.8,
+                category: 'multimedia',
+                type: 'graphic-design'
+            },
+            {
+                id: 'mm3',
+                title: 'Cultivating Hope',
+                image: 'images/Multimedia/CULTIVATING HOPE.png',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'poster-design'
+            },
+            {
+                id: 'mm4',
+                title: 'E-Logo Design',
+                image: 'images/Multimedia/ELOGO2.jpg',
+                aspectRatio: 1.0,
+                category: 'multimedia',
+                type: 'logo-design'
+            },
+            {
+                id: 'mm5',
+                title: 'Illusive Art Collection',
+                image: 'images/Multimedia/Illusive Art.jpg',
+                aspectRatio: 1.3,
+                category: 'multimedia',
+                type: 'digital-art'
+            },
+            {
+                id: 'mm6',
+                title: 'Logo Signature',
+                image: 'images/Multimedia/Logosignature-1.png',
+                aspectRatio: 0.6,
+                category: 'multimedia',
+                type: 'branding'
+            },
+            {
+                id: 'mm7',
+                title: 'Movie Poster',
+                image: 'images/Multimedia/movie.jpg',
+                aspectRatio: 1.5,
+                category: 'multimedia',
+                type: 'poster-design'
+            },
+            {
+                id: 'mm8',
+                title: 'Nail Art Poster',
+                image: 'images/Multimedia/nailartposter-01.png',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'poster-design'
+            },
+            {
+                id: 'mm9',
+                title: 'Graphic Design Services',
+                image: 'images/Multimedia/📢 GRAPHIC DESIGN SERVICES AVAILABLE!.jpg',
+                aspectRatio: 1.0,
+                category: 'multimedia',
+                type: 'promotional'
+            },
+            {
+                id: 'mm10',
+                title: 'Lip Sync Animation',
+                image: 'images/Multimedia/🗣_ Lip synchronization animation.jpg',
+                aspectRatio: 1.1,
+                category: 'multimedia',
+                type: 'animation'
+            },
+            {
+                id: 'mm11',
+                title: 'Digital Portrait 1',
+                image: 'images/Multimedia/469849086_936050065119015_7743347778414988284_n.jpg',
+                aspectRatio: 1.25,
+                category: 'multimedia',
+                type: 'portrait'
+            },
+            {
+                id: 'mm12',
+                title: 'Character Design',
+                image: 'images/Multimedia/472238659_953063830084305_2418073428040711463_n.jpg',
+                aspectRatio: 1.6,
+                category: 'multimedia',
+                type: 'character-design'
+            },
+            {
+                id: 'mm13',
+                title: 'Abstract Art',
+                image: 'images/Multimedia/472269568_953056016751753_5344637467754171881_n.jpg',
+                aspectRatio: 0.9,
+                category: 'multimedia',
+                type: 'abstract'
+            },
+            {
+                id: 'mm14',
+                title: 'Digital Illustration',
+                image: 'images/Multimedia/473356194_959417712782250_2278658404532006115_n.jpg',
+                aspectRatio: 1.3,
+                category: 'multimedia',
+                type: 'illustration'
+            },
+            {
+                id: 'mm15',
+                title: 'Creative Design',
+                image: 'images/Multimedia/474199832_965493618841326_2020807175418548968_n.jpg',
+                aspectRatio: 1.1,
+                category: 'multimedia',
+                type: 'creative-design'
+            },
+            {
+                id: 'mm16',
+                title: 'Artistic Portrait',
+                image: 'images/Multimedia/475416401_970462681677753_2942346849733692134_n.jpg',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'portrait'
+            },
+            {
+                id: 'mm17',
+                title: 'Digital Art Piece',
+                image: 'images/Multimedia/481467626_1022930976524135_5531698789076887392_n.jpg',
+                aspectRatio: 0.8,
+                category: 'multimedia',
+                type: 'digital-art'
+            },
+            {
+                 id: 'mm18',
+                 title: 'Concept Design',
+                 image: 'images/Multimedia/485042287_1027770212706878_398404829938564023_n.jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'concept-art'
+             },
+             {
+                 id: 'mm19',
+                 title: 'Digital Portrait 2',
+                 image: 'images/Multimedia/136071839_103074691749894_3446478483048366874_n.jpg',
+                 aspectRatio: 1.0,
+                 category: 'multimedia',
+                 type: 'portrait'
+             },
+             {
+                 id: 'mm20',
+                 title: 'Creative Portrait',
+                 image: 'images/Multimedia/166456410_135997995124230_3238179062977347146_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'portrait'
+             },
+             {
+                 id: 'mm21',
+                 title: 'Artistic Design',
+                 image: 'images/Multimedia/166904630_135996275124402_2292834204959366101_n.jpg',
+                 aspectRatio: 1.1,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm22',
+                 title: 'Creative Illustration',
+                 image: 'images/Multimedia/472282411_952377750152913_48178386814872918_n.jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'illustration'
+             },
+             {
+                 id: 'mm23',
+                 title: 'Digital Design',
+                 image: 'images/Multimedia/472428494_953056056751749_4553522913429396045_n.jpg',
+                 aspectRatio: 0.9,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm24',
+                 title: 'Artistic Creation',
+                 image: 'images/Multimedia/472559709_956042399786448_4076794601199896087_n.jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'creative-design'
+             },
+             {
+                 id: 'mm25',
+                 title: 'Visual Art',
+                 image: 'images/Multimedia/472739003_953056250085063_5922751743994347702_n.jpg',
+                 aspectRatio: 1.5,
+                 category: 'multimedia',
+                 type: 'visual-art'
+             },
+             {
+                 id: 'mm26',
+                 title: 'Digital Artwork',
+                 image: 'images/Multimedia/472785969_953063596750995_4524059652196493568_n.jpg',
+                 aspectRatio: 0.8,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm27',
+                 title: 'Character Portrait',
+                 image: 'images/Multimedia/473420441_959395292784492_944982300877025773_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'character-design'
+             },
+             {
+                 id: 'mm28',
+                 title: 'Creative Design 2',
+                 image: 'images/Multimedia/473615325_959417512782270_4754573526543824880_n.jpg',
+                 aspectRatio: 1.1,
+                 category: 'multimedia',
+                 type: 'creative-design'
+             },
+             {
+                 id: 'mm29',
+                 title: 'Digital Art 2',
+                 image: 'images/Multimedia/474376535_965493782174643_4475091398676248022_n.jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm30',
+                 title: 'Artistic Portrait 2',
+                 image: 'images/Multimedia/474648025_964842145573140_3680103014009363718_n.jpg',
+                 aspectRatio: 0.9,
+                 category: 'multimedia',
+                 type: 'portrait'
+             },
+             {
+                 id: 'mm31',
+                 title: 'Creative Work',
+                 image: 'images/Multimedia/474727689_965494705507884_619942268105979960_n.jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'creative-design'
+             },
+             {
+                 id: 'mm32',
+                 title: 'Digital Creation',
+                 image: 'images/Multimedia/474787028_965494752174546_992884946344023344_n.jpg',
+                 aspectRatio: 1.0,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm33',
+                 title: 'Visual Design',
+                 image: 'images/Multimedia/474828709_965493588841329_6766535837539612958_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'visual-design'
+             },
+             {
+                 id: 'mm34',
+                 title: 'Character Art',
+                 image: 'images/Multimedia/475537086_971258264931528_8676884073356276570_n.jpg',
+                 aspectRatio: 1.5,
+                 category: 'multimedia',
+                 type: 'character-design'
+             },
+             {
+                 id: 'mm35',
+                 title: 'Creative Portrait',
+                 image: 'images/Multimedia/475752673_970461465011208_3846685113946732652_n.jpg',
+                 aspectRatio: 0.8,
+                 category: 'multimedia',
+                 type: 'portrait'
+             },
+             {
+                 id: 'mm36',
+                 title: 'Digital Portrait 3',
+                 image: 'images/Multimedia/475774062_971083744948980_5940471440160588200_n.jpg',
+                 aspectRatio: 1.1,
+                 category: 'multimedia',
+                 type: 'portrait'
+             },
+             {
+                 id: 'mm37',
+                 title: 'Artistic Design 2',
+                 image: 'images/Multimedia/482249226_1025093236307909_4114626913291360975_n.jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'artistic-design'
+             },
+             {
+                 id: 'mm38',
+                 title: 'Creative Art',
+                 image: 'images/Multimedia/485772061_1029467515870481_7413558905439476267_n.jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'creative-art'
+             },
+             {
+                 id: 'mm39',
+                 title: 'Digital Design 2',
+                 image: 'images/Multimedia/486282696_1029467079203858_1995862650663365311_n.jpg',
+                 aspectRatio: 0.9,
+                 category: 'multimedia',
+                 type: 'digital-design'
+             },
+             {
+                 id: 'mm40',
+                 title: 'Visual Art 2',
+                 image: 'images/Multimedia/486996980_1041676211316278_1407234497704843062_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'visual-art'
+             },
+             {
+                 id: 'mm41',
+                 title: 'Character Design 2',
+                 image: 'images/Multimedia/488419965_1043392581144641_3885244312682653680_n.jpg',
+                 aspectRatio: 1.0,
+                 category: 'multimedia',
+                 type: 'character-design'
+             },
+             {
+                 id: 'mm42',
+                 title: 'Artistic Creation 2',
+                 image: 'images/Multimedia/489959435_1041676257982940_5092184925787691608_n.jpg',
+                 aspectRatio: 1.5,
+                 category: 'multimedia',
+                 type: 'artistic-creation'
+             },
+             {
+                 id: 'mm43',
+                 title: 'Digital Art 3',
+                 image: 'images/Multimedia/490524935_1047669097383656_764562201270797126_n.jpg',
+                 aspectRatio: 0.8,
+                 category: 'multimedia',
+                 type: 'digital-art'
+             },
+             {
+                 id: 'mm44',
+                 title: 'Creative Design 3',
+                 image: 'images/Multimedia/493522282_1072522654898300_9102169032651131427_n.jpg',
+                 aspectRatio: 1.1,
+                 category: 'multimedia',
+                 type: 'creative-design'
+             },
+             {
+                 id: 'mm45',
+                 title: 'Visual Design 2',
+                 image: 'images/Multimedia/493872149_1072522691564963_1422580322955468728_n.jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'visual-design'
+             },
+             {
+                 id: 'mm46',
+                 title: 'Artistic Work',
+                 image: 'images/Multimedia/493939104_1071574698326429_8701940252065052579_n.jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'artistic-work'
+             },
+             {
+                 id: 'mm47',
+                 title: 'Digital Creation 2',
+                 image: 'images/Multimedia/494749821_1072415621575670_6564369508355121380_n.jpg',
+                 aspectRatio: 0.9,
+                 category: 'multimedia',
+                 type: 'digital-creation'
+             },
+             {
+                 id: 'mm48',
+                 title: 'Creative Art 2',
+                 image: 'images/Multimedia/495389776_1072522724898293_5557781368938430890_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'creative-art'
+             },
+             {
+                 id: 'mm49',
+                 title: 'Visual Art 3',
+                 image: 'images/Multimedia/495617690_1072522861564946_5727592283544115566_n.jpg',
+                 aspectRatio: 1.0,
+                 category: 'multimedia',
+                 type: 'visual-art'
+             },
+             {
+                 id: 'mm50',
+                 title: 'Digital Design 3',
+                 image: 'images/Multimedia/496023100_1072522818231617_7801718320681168196_n.jpg',
+                 aspectRatio: 1.5,
+                 category: 'multimedia',
+                 type: 'digital-design'
+             },
+             {
+                 id: 'mm51',
+                 title: 'Artistic Design 3',
+                 image: 'images/Multimedia/500068474_1076775804472985_5125279754667778816_n.jpg',
+                 aspectRatio: 0.8,
+                 category: 'multimedia',
+                 type: 'artistic-design'
+             },
+             {
+                 id: 'mm52',
+                 title: 'Illusive Art 1',
+                 image: 'images/Multimedia/Illusive Art (1).jpg',
+                 aspectRatio: 1.1,
+                 category: 'multimedia',
+                 type: 'illusive-art'
+             },
+             {
+                 id: 'mm53',
+                 title: 'Illusive Art 2',
+                 image: 'images/Multimedia/Illusive Art (2).jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'illusive-art'
+             },
+             {
+                 id: 'mm54',
+                 title: 'Illusive Art 3',
+                 image: 'images/Multimedia/Illusive Art (3).jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'illusive-art'
+             }
+         ];
+
+        let currentFilter = 'software';
 
         // Filter functionality
         function filterProjects(category) {
             currentFilter = category;
-            const filteredProjects = category === 'all' ? projects : projects.filter(project => project.category === category);
+            const filteredProjects = projects.filter(project => project.category === category);
             renderProjects(filteredProjects);
             
             // Update button styles
@@ -411,7 +936,14 @@
         // Render projects
         function renderProjects(projectsToRender = projects) {
             const projectsContainer = document.getElementById('projectsContainer');
+            
+            if (currentFilter === 'multimedia') {
+                renderMasonryGrid();
+                return;
+            }
+            
             projectsContainer.innerHTML = '';
+            projectsContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 projects-grid';
             
             projectsToRender.forEach(project => {
                 const projectCard = document.createElement('div');
@@ -442,6 +974,64 @@
             });
         }
 
+        function renderMasonryGrid() {
+            const projectsContainer = document.getElementById('projectsContainer');
+            projectsContainer.innerHTML = '';
+            projectsContainer.className = 'masonry-grid';
+            
+            // Determine number of columns based on screen size
+            const screenWidth = window.innerWidth;
+            let columnCount;
+            if (screenWidth < 640) {
+                columnCount = 1;
+            } else if (screenWidth < 768) {
+                columnCount = 2;
+            } else if (screenWidth < 1024) {
+                columnCount = 3;
+            } else {
+                columnCount = 4;
+            }
+            
+            // Create columns
+            const columns = [];
+            const columnHeights = [];
+            
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'masonry-column';
+                columns.push(column);
+                columnHeights.push(0);
+                projectsContainer.appendChild(column);
+            }
+            
+            // Add items to shortest column
+            multimediaContent.forEach(item => {
+                const masonryItem = document.createElement('div');
+                masonryItem.className = 'masonry-item';
+                
+                // Calculate item height based on aspect ratio
+                const baseWidth = 300; // Base width for calculation
+                const itemHeight = baseWidth * item.aspectRatio;
+                
+                masonryItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" loading="lazy">
+                    <div class="masonry-item-content">
+                        <h3 class="masonry-item-title">${item.title}</h3>
+                        <p class="masonry-item-type">${item.type.replace('-', ' ')}</p>
+                    </div>
+                `;
+                
+                // Find shortest column
+                const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+                
+                // Add item to shortest column
+                columns[shortestColumnIndex].appendChild(masonryItem);
+                
+                // Update column height (approximate)
+                columnHeights[shortestColumnIndex] += itemHeight + 80; // 80px for content and gaps
+            });
+        }
+
         // Add event listeners for filter buttons
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -450,10 +1040,21 @@
                     filterProjects(filter);
                 });
             });
+            
+            // Set default active button
+            filterProjects('software');
         });
 
-        // Initialize the page
-        renderProjects();
+        // Add window resize listener for masonry grid responsiveness
+        window.addEventListener('resize', function() {
+            if (currentFilter === 'multimedia') {
+                // Debounce resize events
+                clearTimeout(window.resizeTimeout);
+                window.resizeTimeout = setTimeout(function() {
+                    renderMasonryGrid();
+                }, 250);
+            }
+        });
 
         // Theme Toggle Functionality
         function initTheme() {
