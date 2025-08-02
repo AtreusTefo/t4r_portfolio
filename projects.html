@@ -448,6 +448,97 @@
         </div>
     </footer>
 
+    <!-- Multimedia Modal -->
+    <div id="multimediaModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg max-w-6xl max-h-[90vh] w-full mx-4 overflow-hidden flex flex-col md:flex-row relative">
+            <!-- Close Button (Desktop) -->
+            <button id="closeModal" class="absolute top-4 left-4 md:top-4 md:left-4 text-white bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition duration-300 z-20">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Media Content with Zoom Controls -->
+            <div class="flex-1 bg-black flex items-center justify-center relative overflow-hidden" id="mediaContainer">
+                <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain transition-transform duration-300" style="transform: scale(1)">
+                <video id="modalVideo" class="max-w-full max-h-full object-contain hidden" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                
+                <!-- Zoom Controls -->
+                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10" id="zoomControls">
+                    <button id="zoomOut" class="bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition duration-300">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button id="zoomReset" class="bg-black bg-opacity-50 text-white rounded px-3 py-2 text-sm hover:bg-opacity-75 transition duration-300">
+                        <span id="zoomLevel">100%</span>
+                    </button>
+                    <button id="zoomIn" class="bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-75 transition duration-300">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content Info -->
+            <div class="w-full md:w-80 p-6 bg-white overflow-y-auto flex flex-col">
+                <!-- Content Section -->
+                <div class="flex-grow">
+                    <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 mb-4"></h2>
+                    <div class="space-y-3 mb-6">
+                        <div>
+                            <span class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Type</span>
+                            <p id="modalType" class="text-gray-900 capitalize"></p>
+                        </div>
+                        <div id="modalDescriptionContainer" class="hidden">
+                            <span class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Description</span>
+                            <p id="modalDescription" class="text-gray-700 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons Section -->
+                <div class="mt-auto space-y-4">
+                    <!-- Download Button -->
+                    <div>
+                        <button id="downloadButton" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Share Button -->
+                    <div class="relative">
+                        <button id="shareButton" class="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-300 flex items-center justify-center space-x-2">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Share</span>
+                        </button>
+                        
+                        <!-- Share Popup -->
+                        <div id="sharePopup" class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg p-4 hidden z-30">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button id="copyLink" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                                    <i class="fas fa-link text-gray-600"></i>
+                                    <span class="text-sm text-gray-700">Copy Link</span>
+                                </button>
+                                <button id="shareWhatsApp" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                                    <i class="fab fa-whatsapp text-green-500"></i>
+                                    <span class="text-sm text-gray-700">WhatsApp</span>
+                                </button>
+                                <button id="shareFacebook" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                                    <i class="fab fa-facebook text-blue-600"></i>
+                                    <span class="text-sm text-gray-700">Facebook</span>
+                                </button>
+                                <button id="shareTwitter" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-100 transition duration-300">
+                                    <i class="fab fa-twitter text-blue-400"></i>
+                                    <span class="text-sm text-gray-700">Twitter</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Mobile menu toggle
         document.querySelector('.mobile-menu-button').addEventListener('click', function() {
@@ -486,7 +577,8 @@
                 image: 'images/Multimedia/Anime Style Self Portrait (2).jpg',
                 aspectRatio: 1.2,
                 category: 'multimedia',
-                type: 'digital-art'
+                type: 'digital-art',
+                description: 'A stylized anime-inspired self-portrait showcasing digital art techniques and character design skills.'
             },
             {
                 id: 'mm2',
@@ -494,7 +586,8 @@
                 image: 'images/Multimedia/BESF.jpg',
                 aspectRatio: 0.8,
                 category: 'multimedia',
-                type: 'graphic-design'
+                type: 'graphic-design',
+                description: 'Professional graphic design work featuring clean typography and modern visual elements.'
             },
             {
                 id: 'mm3',
@@ -502,7 +595,8 @@
                 image: 'images/Multimedia/CULTIVATING HOPE.png',
                 aspectRatio: 1.4,
                 category: 'multimedia',
-                type: 'poster-design'
+                type: 'poster-design',
+                description: 'Inspirational poster design promoting positivity and hope through thoughtful visual composition.'
             },
             {
                 id: 'mm4',
@@ -510,7 +604,8 @@
                 image: 'images/Multimedia/ELOGO2.jpg',
                 aspectRatio: 1.0,
                 category: 'multimedia',
-                type: 'logo-design'
+                type: 'logo-design',
+                description: 'Modern logo design featuring elegant typography and professional branding elements.'
             },
             {
                 id: 'mm5',
@@ -518,7 +613,8 @@
                 image: 'images/Multimedia/Illusive Art.jpg',
                 aspectRatio: 1.3,
                 category: 'multimedia',
-                type: 'digital-art'
+                type: 'digital-art',
+                description: 'Abstract digital artwork exploring visual illusions and creative design concepts.'
             },
             {
                 id: 'mm6',
@@ -526,7 +622,8 @@
                 image: 'images/Multimedia/Logosignature-1.png',
                 aspectRatio: 0.6,
                 category: 'multimedia',
-                type: 'branding'
+                type: 'branding',
+                description: 'Professional logo signature design showcasing personal branding and typography expertise.'
             },
             {
                 id: 'mm7',
@@ -534,7 +631,8 @@
                 image: 'images/Multimedia/movie.jpg',
                 aspectRatio: 1.5,
                 category: 'multimedia',
-                type: 'poster-design'
+                type: 'poster-design',
+                description: 'Cinematic movie poster design featuring dramatic composition and professional layout techniques.'
             },
             {
                 id: 'mm8',
@@ -542,7 +640,8 @@
                 image: 'images/Multimedia/nailartposter-01.png',
                 aspectRatio: 1.4,
                 category: 'multimedia',
-                type: 'poster-design'
+                type: 'poster-design',
+                description: 'Elegant nail art promotional poster combining beauty aesthetics with effective marketing design.'
             },
             {
                 id: 'mm9',
@@ -550,7 +649,8 @@
                 image: 'images/Multimedia/📢 GRAPHIC DESIGN SERVICES AVAILABLE!.jpg',
                 aspectRatio: 1.0,
                 category: 'multimedia',
-                type: 'promotional'
+                type: 'promotional',
+                description: 'Eye-catching promotional design advertising graphic design services with bold visual elements.'
             },
             {
                 id: 'mm10',
@@ -558,7 +658,8 @@
                 image: 'images/Multimedia/🗣_ Lip synchronization animation.jpg',
                 aspectRatio: 1.1,
                 category: 'multimedia',
-                type: 'animation'
+                type: 'animation',
+                description: 'Technical demonstration of lip synchronization animation showcasing character animation skills.'
             },
             {
                 id: 'mm11',
@@ -566,7 +667,8 @@
                 image: 'images/Multimedia/469849086_936050065119015_7743347778414988284_n.jpg',
                 aspectRatio: 1.25,
                 category: 'multimedia',
-                type: 'portrait'
+                type: 'portrait',
+                description: 'Detailed digital portrait showcasing realistic rendering techniques and artistic expression.'
             },
             {
                 id: 'mm12',
@@ -574,7 +676,8 @@
                 image: 'images/Multimedia/472238659_953063830084305_2418073428040711463_n.jpg',
                 aspectRatio: 1.6,
                 category: 'multimedia',
-                type: 'character-design'
+                type: 'character-design',
+                description: 'Original character design featuring unique personality traits and distinctive visual style.'
             },
             {
                 id: 'mm13',
@@ -582,7 +685,8 @@
                 image: 'images/Multimedia/472269568_953056016751753_5344637467754171881_n.jpg',
                 aspectRatio: 0.9,
                 category: 'multimedia',
-                type: 'abstract'
+                type: 'abstract',
+                description: 'Abstract artistic composition exploring color theory and experimental visual concepts.'
             },
             {
                 id: 'mm14',
@@ -590,7 +694,8 @@
                 image: 'images/Multimedia/473356194_959417712782250_2278658404532006115_n.jpg',
                 aspectRatio: 1.3,
                 category: 'multimedia',
-                type: 'illustration'
+                type: 'illustration',
+                description: 'Professional digital illustration demonstrating storytelling through visual narrative.'
             },
             {
                 id: 'mm15',
@@ -598,7 +703,8 @@
                 image: 'images/Multimedia/474199832_965493618841326_2020807175418548968_n.jpg',
                 aspectRatio: 1.1,
                 category: 'multimedia',
-                type: 'creative-design'
+                type: 'creative-design',
+                description: 'Innovative creative design showcasing experimental techniques and artistic vision.'
             },
             {
                 id: 'mm16',
@@ -606,7 +712,8 @@
                 image: 'images/Multimedia/475416401_970462681677753_2942346849733692134_n.jpg',
                 aspectRatio: 1.4,
                 category: 'multimedia',
-                type: 'portrait'
+                type: 'portrait',
+                description: 'Expressive artistic portrait demonstrating advanced digital painting techniques and emotional depth.'
             },
             {
                 id: 'mm17',
@@ -614,7 +721,8 @@
                 image: 'images/Multimedia/481467626_1022930976524135_5531698789076887392_n.jpg',
                 aspectRatio: 0.8,
                 category: 'multimedia',
-                type: 'digital-art'
+                type: 'digital-art',
+                description: 'Contemporary digital artwork showcasing creative composition and modern artistic expression.'
             },
             {
                  id: 'mm18',
@@ -622,7 +730,8 @@
                  image: 'images/Multimedia/485042287_1027770212706878_398404829938564023_n.jpg',
                  aspectRatio: 1.2,
                  category: 'multimedia',
-                 type: 'concept-art'
+                 type: 'concept-art',
+                 description: 'Innovative concept art exploring creative ideas and visual storytelling techniques.'
              },
              {
                  id: 'mm19',
@@ -630,7 +739,8 @@
                  image: 'images/Multimedia/136071839_103074691749894_3446478483048366874_n.jpg',
                  aspectRatio: 1.0,
                  category: 'multimedia',
-                 type: 'portrait'
+                 type: 'portrait',
+                 description: 'Stylized digital portrait featuring unique artistic interpretation and creative visual elements.'
              },
              {
                  id: 'mm20',
@@ -638,7 +748,8 @@
                  image: 'images/Multimedia/166456410_135997995124230_3238179062977347146_n.jpg',
                  aspectRatio: 1.3,
                  category: 'multimedia',
-                 type: 'portrait'
+                 type: 'portrait',
+                 description: 'Creative portrait design combining artistic flair with technical digital art proficiency.'
              },
              {
                  id: 'mm21',
@@ -646,7 +757,8 @@
                  image: 'images/Multimedia/166904630_135996275124402_2292834204959366101_n.jpg',
                  aspectRatio: 1.1,
                  category: 'multimedia',
-                 type: 'digital-art'
+                 type: 'digital-art',
+                 description: 'Sophisticated artistic design showcasing mastery of digital art tools and creative vision.'
              },
              {
                  id: 'mm22',
@@ -919,8 +1031,6 @@
         // Filter functionality
         function filterProjects(category) {
             currentFilter = category;
-            const filteredProjects = projects.filter(project => project.category === category);
-            renderProjects(filteredProjects);
             
             // Update button styles
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -929,8 +1039,23 @@
             });
             
             const activeBtn = document.querySelector(`[data-filter="${category}"]`);
-            activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
-            activeBtn.classList.add('bg-purple-600', 'text-white');
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                activeBtn.classList.add('bg-purple-600', 'text-white');
+            }
+            
+            // Handle multimedia filter differently
+            if (category === 'multimedia') {
+                // Reset pagination for multimedia
+                currentPage = 1;
+                allItemsLoaded = false;
+                isLoading = false;
+                renderMasonryGrid(true);
+            } else {
+                // Filter regular projects
+                const filteredProjects = projects.filter(project => project.category === category);
+                renderProjects(filteredProjects);
+            }
         }
 
         // Render projects
@@ -938,9 +1063,16 @@
             const projectsContainer = document.getElementById('projectsContainer');
             
             if (currentFilter === 'multimedia') {
-                renderMasonryGrid();
+                // Reset pagination for multimedia
+                currentPage = 1;
+                allItemsLoaded = false;
+                isLoading = false;
+                renderMasonryGrid(true);
                 return;
             }
+            
+            // Remove load more trigger when switching to other categories
+            removeLoadMoreTrigger();
             
             projectsContainer.innerHTML = '';
             projectsContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 projects-grid';
@@ -974,9 +1106,48 @@
             });
         }
 
-        function renderMasonryGrid() {
+        // Pinterest-style performance variables
+        let currentPage = 1;
+        const itemsPerPage = 8; // Reduced initial load for faster performance
+        let isLoading = false;
+        let allItemsLoaded = false;
+        let intersectionObserver = null;
+        let imageCache = new Map();
+        let loadedImages = new Set();
+        
+        // Preload next batch of images for smooth scrolling
+        function preloadImages(items) {
+            // Limit preloading to avoid overwhelming the browser
+            const itemsToPreload = items.slice(0, 5);
+            itemsToPreload.forEach((item, index) => {
+                if (!imageCache.has(item.image)) {
+                    // Stagger preloading to avoid blocking
+                    setTimeout(() => {
+                        const img = new Image();
+                        img.onload = () => {
+                            imageCache.set(item.image, img);
+                            loadedImages.add(item.image);
+                        };
+                        img.onerror = () => {
+                            console.warn(`Failed to preload image: ${item.image}`);
+                        };
+                        img.src = item.image;
+                    }, index * 100); // 100ms delay between each preload
+                }
+            });
+        }
+        
+        function renderMasonryGrid(reset = false) {
             const projectsContainer = document.getElementById('projectsContainer');
-            projectsContainer.innerHTML = '';
+            
+            if (reset) {
+                projectsContainer.innerHTML = '';
+                currentPage = 1;
+                allItemsLoaded = false;
+                isLoading = false;
+                loadedImages.clear();
+            }
+            
             projectsContainer.className = 'masonry-grid';
             
             // Determine number of columns based on screen size
@@ -992,44 +1163,302 @@
                 columnCount = 4;
             }
             
-            // Create columns
-            const columns = [];
-            const columnHeights = [];
+            // Get or create columns
+            let columns = [];
+            let columnHeights = [];
             
-            for (let i = 0; i < columnCount; i++) {
-                const column = document.createElement('div');
-                column.className = 'masonry-column';
-                columns.push(column);
-                columnHeights.push(0);
-                projectsContainer.appendChild(column);
+            if (reset || projectsContainer.children.length === 0) {
+                // Create new columns
+                for (let i = 0; i < columnCount; i++) {
+                    const column = document.createElement('div');
+                    column.className = 'masonry-column';
+                    columns.push(column);
+                    columnHeights.push(0);
+                    projectsContainer.appendChild(column);
+                }
+            } else {
+                // Use existing columns and calculate current heights
+                columns = Array.from(projectsContainer.children);
+                columnHeights = columns.map(col => {
+                    let height = 0;
+                    Array.from(col.children).forEach(child => {
+                        height += child.offsetHeight + 20; // 20px gap
+                    });
+                    return height;
+                });
             }
             
-            // Add items to shortest column
-            multimediaContent.forEach(item => {
+            // Calculate items to show (Pinterest-style pagination)
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, multimediaContent.length);
+            const itemsToRender = multimediaContent.slice(startIndex, endIndex);
+            
+            // Preload next batch for smooth scrolling
+            if (endIndex < multimediaContent.length) {
+                const nextBatch = multimediaContent.slice(endIndex, endIndex + itemsPerPage);
+                preloadImages(nextBatch);
+            }
+            
+            // Add items to shortest column with smooth animations
+            itemsToRender.forEach((item, index) => {
                 const masonryItem = document.createElement('div');
-                masonryItem.className = 'masonry-item';
+                masonryItem.className = 'masonry-item opacity-0 transform translate-y-4 transition-all duration-500';
                 
                 // Calculate item height based on aspect ratio
                 const baseWidth = 300; // Base width for calculation
                 const itemHeight = baseWidth * item.aspectRatio;
                 
+                // Create placeholder for smooth loading
+                const placeholder = document.createElement('div');
+                placeholder.className = 'w-full bg-gray-200 animate-pulse rounded-lg';
+                placeholder.style.height = `${itemHeight}px`;
+                
                 masonryItem.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}" loading="lazy">
-                    <div class="masonry-item-content">
-                        <h3 class="masonry-item-title">${item.title}</h3>
-                        <p class="masonry-item-type">${item.type.replace('-', ' ')}</p>
+                    <div class="relative overflow-hidden rounded-lg bg-gray-200">
+                        <img src="${item.image}" alt="${item.title}" loading="lazy" 
+                             class="w-full h-auto object-cover transition-all duration-500 hover:scale-105"
+                             style="min-height: 200px; background: #f3f4f6;"
+                             onload="this.style.minHeight='auto'; this.parentElement.parentElement.classList.remove('opacity-0', 'translate-y-4'); this.parentElement.classList.remove('bg-gray-200');"
+                             onerror="this.parentElement.parentElement.style.display='none'">
+                    </div>
+                    <div class="masonry-item-content p-3">
+                        <h3 class="masonry-item-title text-sm font-semibold text-gray-800 mb-1 line-clamp-2">${item.title}</h3>
+                        <p class="masonry-item-type text-xs text-gray-600 capitalize">${item.type.replace('-', ' ')}</p>
                     </div>
                 `;
+                
+                // Add click event listener to open modal
+                masonryItem.addEventListener('click', () => openModal(item));
+                masonryItem.style.cursor = 'pointer';
                 
                 // Find shortest column
                 const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
                 
-                // Add item to shortest column
-                columns[shortestColumnIndex].appendChild(masonryItem);
+                // Add item to shortest column with faster staggered animation
+                setTimeout(() => {
+                    columns[shortestColumnIndex].appendChild(masonryItem);
+                    // Trigger animation immediately for faster perceived loading
+                    setTimeout(() => {
+                        masonryItem.classList.remove('opacity-0', 'translate-y-4');
+                    }, index * 25); // Faster staggered animation
+                }, index * 15); // Reduced delay for faster rendering
                 
                 // Update column height (approximate)
                 columnHeights[shortestColumnIndex] += itemHeight + 80; // 80px for content and gaps
             });
+            
+            // Setup infinite scroll if not all items loaded
+            if (endIndex >= multimediaContent.length) {
+                allItemsLoaded = true;
+                removeLoadMoreTrigger();
+            } else {
+                setupInfiniteScroll();
+            }
+        }
+
+        // Pinterest-style infinite scroll with Intersection Observer
+        function setupInfiniteScroll() {
+            removeLoadMoreTrigger(); // Remove existing trigger
+            
+            // Create invisible trigger element
+            const trigger = document.createElement('div');
+            trigger.id = 'loadMoreTrigger';
+            trigger.className = 'w-full h-20 flex items-center justify-center';
+            trigger.innerHTML = '<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>';
+            
+            const projectsContainer = document.getElementById('projectsContainer');
+            projectsContainer.parentNode.insertBefore(trigger, projectsContainer.nextSibling);
+            
+            // Setup intersection observer
+            if (intersectionObserver) {
+                intersectionObserver.disconnect();
+            }
+            
+            intersectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !isLoading && !allItemsLoaded) {
+                        loadMoreItems();
+                    }
+                });
+            }, {
+                rootMargin: '100px' // Start loading 100px before trigger is visible
+            });
+            
+            intersectionObserver.observe(trigger);
+        }
+        
+        function loadMoreItems() {
+            if (isLoading || allItemsLoaded) return;
+            
+            isLoading = true;
+            const trigger = document.getElementById('loadMoreTrigger');
+            if (trigger) {
+                trigger.style.opacity = '1';
+            }
+            
+            // Simulate network delay for smooth UX (like Pinterest)
+            setTimeout(() => {
+                currentPage++;
+                renderMasonryGrid(false);
+                isLoading = false;
+                
+                if (trigger && !allItemsLoaded) {
+                    trigger.style.opacity = '0.5';
+                }
+            }, 200); // Reduced delay for faster loading
+        }
+        
+        function removeLoadMoreTrigger() {
+            const trigger = document.getElementById('loadMoreTrigger');
+            if (trigger) {
+                if (intersectionObserver) {
+                    intersectionObserver.unobserve(trigger);
+                }
+                trigger.remove();
+            }
+        }
+
+        // Modal functionality
+        let currentZoom = 1;
+        let currentItem = null;
+        
+        function openModal(item) {
+            const modal = document.getElementById('multimediaModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalVideo = document.getElementById('modalVideo');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalType = document.getElementById('modalType');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalDescriptionContainer = document.getElementById('modalDescriptionContainer');
+            const zoomControls = document.getElementById('zoomControls');
+            
+            currentItem = item;
+            currentZoom = 1;
+            
+            // Set modal content
+            modalTitle.textContent = item.title;
+            modalType.textContent = item.type.replace('-', ' ');
+            
+            // Handle description
+            if (item.description) {
+                modalDescription.textContent = item.description;
+                modalDescriptionContainer.classList.remove('hidden');
+            } else {
+                modalDescriptionContainer.classList.add('hidden');
+            }
+            
+            // Handle media type
+            if (item.image.toLowerCase().includes('.mp4') || item.image.toLowerCase().includes('.webm')) {
+                // Video content
+                modalImage.classList.add('hidden');
+                modalVideo.classList.remove('hidden');
+                modalVideo.querySelector('source').src = item.image;
+                modalVideo.load();
+                zoomControls.classList.add('hidden');
+            } else {
+                // Image content
+                modalVideo.classList.add('hidden');
+                modalImage.classList.remove('hidden');
+                modalImage.src = item.image;
+                modalImage.alt = item.title;
+                modalImage.style.transform = 'scale(1)';
+                zoomControls.classList.remove('hidden');
+                updateZoomLevel();
+            }
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('multimediaModal');
+            const modalVideo = document.getElementById('modalVideo');
+            const sharePopup = document.getElementById('sharePopup');
+            
+            // Hide modal and share popup
+            modal.classList.add('hidden');
+            sharePopup.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            
+            // Reset zoom
+            currentZoom = 1;
+            
+            // Pause video if playing
+            modalVideo.pause();
+        }
+        
+        function updateZoomLevel() {
+            const zoomLevel = document.getElementById('zoomLevel');
+            const modalImage = document.getElementById('modalImage');
+            
+            zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+            modalImage.style.transform = `scale(${currentZoom})`;
+        }
+        
+        function zoomIn() {
+            if (currentZoom < 3) {
+                currentZoom += 0.25;
+                updateZoomLevel();
+            }
+        }
+        
+        function zoomOut() {
+            if (currentZoom > 0.5) {
+                currentZoom -= 0.25;
+                updateZoomLevel();
+            }
+        }
+        
+        function resetZoom() {
+            currentZoom = 1;
+            updateZoomLevel();
+        }
+        
+        function toggleSharePopup() {
+            const sharePopup = document.getElementById('sharePopup');
+            sharePopup.classList.toggle('hidden');
+        }
+        
+        function copyLink() {
+            const url = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
+            navigator.clipboard.writeText(url).then(() => {
+                // Show temporary feedback
+                const copyBtn = document.getElementById('copyLink');
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check text-green-500"></i><span class="text-sm text-green-600">Copied!</span>';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+        
+        function shareToWhatsApp() {
+            const url = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
+            const text = `Check out this amazing ${currentItem.type.replace('-', ' ')}: ${currentItem.title}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+        }
+        
+        function shareToFacebook() {
+            const url = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        }
+        
+        function shareToTwitter() {
+            const url = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
+            const text = `Check out this amazing ${currentItem.type.replace('-', ' ')}: ${currentItem.title}`;
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        }
+        
+        function downloadItem() {
+            if (!currentItem) return;
+            
+            const link = document.createElement('a');
+            link.href = currentItem.image || currentItem.video;
+            link.download = `${currentItem.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${currentItem.image ? 'jpg' : 'mp4'}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Add event listeners for filter buttons
@@ -1039,6 +1468,51 @@
                     const filter = this.getAttribute('data-filter');
                     filterProjects(filter);
                 });
+            });
+            
+            // Modal event listeners
+            const modal = document.getElementById('multimediaModal');
+            const closeModalBtn = document.getElementById('closeModal');
+            
+            // Close modal when clicking close button
+            closeModalBtn.addEventListener('click', closeModal);
+            
+            // Close modal when clicking outside the modal content
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModal();
+                }
+            });
+            
+            // Zoom controls event listeners
+            document.getElementById('zoomIn').addEventListener('click', zoomIn);
+            document.getElementById('zoomOut').addEventListener('click', zoomOut);
+            document.getElementById('zoomReset').addEventListener('click', resetZoom);
+            
+            // Download functionality event listener
+            document.getElementById('downloadButton').addEventListener('click', downloadItem);
+            
+            // Share functionality event listeners
+            document.getElementById('shareButton').addEventListener('click', toggleSharePopup);
+            document.getElementById('copyLink').addEventListener('click', copyLink);
+            document.getElementById('shareWhatsApp').addEventListener('click', shareToWhatsApp);
+            document.getElementById('shareFacebook').addEventListener('click', shareToFacebook);
+            document.getElementById('shareTwitter').addEventListener('click', shareToTwitter);
+            
+            // Close share popup when clicking outside
+            document.addEventListener('click', function(e) {
+                const sharePopup = document.getElementById('sharePopup');
+                const shareBtn = document.getElementById('shareButton');
+                if (!sharePopup.contains(e.target) && !shareBtn.contains(e.target)) {
+                    sharePopup.classList.add('hidden');
+                }
             });
             
             // Set default active button
