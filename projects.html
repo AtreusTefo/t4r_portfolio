@@ -457,12 +457,25 @@
             </button>
             
             <!-- Media Content with Zoom Controls -->
-            <div class="flex-1 bg-black flex items-center justify-center relative overflow-hidden" id="mediaContainer">
+            <div class="flex-1 flex items-center justify-center relative overflow-hidden" id="mediaContainer" style="background-color: #2B2B2B;">
                 <img id="modalImage" src="" alt="" class="max-w-full max-h-full object-contain transition-transform duration-300" style="transform: scale(1)">
                 <video id="modalVideo" class="max-w-full max-h-full object-contain hidden" controls>
                     <source src="" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
+                
+                <!-- Navigation Controls for Groups -->
+                <div id="groupNavigation" class="hidden">
+                    <button id="prevItem" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-75 transition duration-300 z-10">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button id="nextItem" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-75 transition duration-300 z-10">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white rounded px-3 py-1 text-sm z-10">
+                        <span id="currentItemIndex">1</span> / <span id="totalItems">1</span>
+                    </div>
+                </div>
                 
                 <!-- Zoom Controls -->
                 <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10" id="zoomControls">
@@ -528,8 +541,10 @@
                                     <span class="text-sm text-gray-700">Facebook</span>
                                 </button>
                                 <button id="shareTwitter" class="flex items-center space-x-2 p-3 rounded-lg hover:bg-gray-100 transition duration-300">
-                                    <i class="fab fa-twitter text-blue-400"></i>
-                                    <span class="text-sm text-gray-700">Twitter</span>
+                                    <svg class="w-4 h-4 text-gray-800" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-700">X</span>
                                 </button>
                             </div>
                         </div>
@@ -569,57 +584,459 @@
             }
         ];
 
-        // Multimedia content for Pinterest-style masonry grid
+        // Multimedia content for Pinterest-style masonry grid with grouped items
         let multimediaContent = [
+            // Self Portrait Collection Group
             {
-                id: 'mm1',
-                title: 'Anime Style Self Portrait',
-                image: 'images/Multimedia/Anime Style Self Portrait (2).jpg',
+                id: 'group_self_portrait',
+                title: 'Self Portrait Collection',
+                image: 'images/Multimedia/Self Portrait/Anime Style Self Portrait (2).jpg',
                 aspectRatio: 1.2,
                 category: 'multimedia',
                 type: 'digital-art',
-                description: 'A stylized anime-inspired self-portrait showcasing digital art techniques and character design skills.'
+                description: 'Collection of self-portraits showcasing various artistic styles and techniques.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'sp1',
+                        title: 'Anime Style Self Portrait',
+                        image: 'images/Multimedia/Self Portrait/Anime Style Self Portrait (2).jpg',
+                        aspectRatio: 1.2,
+                        type: 'digital-art',
+                        description: 'A stylized anime-inspired self-portrait showcasing digital art techniques and character design skills.'
+                    },
+                    {
+                        id: 'sp2',
+                        title: 'Digital Self Portrait',
+                        image: 'images/Multimedia/Self Portrait/474648025_964842145573140_3680103014009363718_n.jpg',
+                        aspectRatio: 0.9,
+                        type: 'portrait',
+                        description: 'Contemporary digital self-portrait demonstrating advanced rendering techniques.'
+                    },
+                    {
+                        id: 'sp3',
+                        title: 'Illusive Art Self Portrait',
+                        image: 'images/Multimedia/Self Portrait/Illusive Art (3).jpg',
+                        aspectRatio: 1.3,
+                        type: 'digital-art',
+                        description: 'Abstract self-portrait exploring visual illusions and creative design concepts.'
+                    }
+                ]
             },
+            // Traditional Art Collection Group
             {
-                id: 'mm2',
-                title: 'BESF Design',
-                image: 'images/Multimedia/BESF.jpg',
+                id: 'group_traditional_art',
+                title: 'Traditional Art Collection',
+                image: 'images/Multimedia/Traditional Art/469849086_936050065119015_7743347778414988284_n.jpg',
+                aspectRatio: 1.25,
+                category: 'multimedia',
+                type: 'traditional-art',
+                description: 'Collection of traditional artwork showcasing various drawing and painting techniques.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'ta1',
+                        title: 'Traditional Portrait 1',
+                        image: 'images/Multimedia/Traditional Art/136071839_103074691749894_3446478483048366874_n.jpg',
+                        aspectRatio: 1.0,
+                        type: 'portrait',
+                        description: 'Detailed traditional portrait showcasing realistic drawing techniques.'
+                    },
+                    {
+                        id: 'ta2',
+                        title: 'Traditional Portrait 2',
+                        image: 'images/Multimedia/Traditional Art/166456410_135997995124230_3238179062977347146_n.jpg',
+                        aspectRatio: 1.3,
+                        type: 'portrait',
+                        description: 'Creative traditional portrait combining artistic flair with technical proficiency.'
+                    },
+                    {
+                        id: 'ta3',
+                        title: 'Traditional Art 3',
+                        image: 'images/Multimedia/Traditional Art/166904630_135996275124402_2292834204959366101_n.jpg',
+                        aspectRatio: 1.1,
+                        type: 'traditional-art',
+                        description: 'Sophisticated traditional artwork showcasing mastery of drawing tools.'
+                    },
+                    {
+                        id: 'ta4',
+                        title: 'Digital Portrait Study',
+                        image: 'images/Multimedia/Traditional Art/469849086_936050065119015_7743347778414988284_n.jpg',
+                        aspectRatio: 1.25,
+                        type: 'portrait',
+                        description: 'Detailed portrait study showcasing realistic rendering techniques.'
+                    },
+                    {
+                        id: 'ta5',
+                        title: 'Traditional Illustration',
+                        image: 'images/Multimedia/Traditional Art/472282411_952377750152913_48178386814872918_n.jpg',
+                        aspectRatio: 1.4,
+                        type: 'illustration',
+                        description: 'Creative traditional illustration demonstrating storytelling through visual narrative.'
+                    },
+                    {
+                        id: 'ta6',
+                        title: 'Traditional Digital Art',
+                        image: 'images/Multimedia/Traditional Art/472785969_953063596750995_4524059652196493568_n.jpg',
+                        aspectRatio: 0.8,
+                        type: 'digital-art',
+                        description: 'Digital artwork with traditional art influences and techniques.'
+                    },
+                    {
+                        id: 'ta7',
+                        title: 'Fit2Fly Design 1',
+                        image: 'images/Multimedia/Traditional Art/Fit2Fly.jpg',
+                        aspectRatio: 1.2,
+                        type: 'design',
+                        description: 'Professional design work for Fit2Fly brand showcasing creative layout.'
+                    },
+                    {
+                        id: 'ta8',
+                        title: 'Fit2Fly Design 2',
+                        image: 'images/Multimedia/Traditional Art/Fit2Fly1.jpg',
+                        aspectRatio: 1.2,
+                        type: 'design',
+                        description: 'Continuation of Fit2Fly brand design series with consistent visual identity.'
+                    },
+                    {
+                        id: 'ta9',
+                        title: 'Fit2Fly Design 3',
+                        image: 'images/Multimedia/Traditional Art/Fit2Fly2.jpg',
+                        aspectRatio: 1.2,
+                        type: 'design',
+                        description: 'Third iteration of Fit2Fly design showcasing brand development.'
+                    },
+                    {
+                        id: 'ta10',
+                        title: 'Fit2Fly Design 4',
+                        image: 'images/Multimedia/Traditional Art/Fit2Fly3.jpg',
+                        aspectRatio: 1.2,
+                        type: 'design',
+                        description: 'Final Fit2Fly design completing the comprehensive brand series.'
+                    }
+                ]
+            },
+            // BESF Design Group
+            {
+                id: 'group_besf',
+                title: 'BESF Design Collection',
+                image: 'images/Multimedia/BESF/BESF.jpg',
                 aspectRatio: 0.8,
                 category: 'multimedia',
                 type: 'graphic-design',
-                description: 'Professional graphic design work featuring clean typography and modern visual elements.'
+                description: 'Professional graphic design work for BESF featuring clean typography and modern visual elements.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'besf1',
+                        title: 'BESF Main Design',
+                        image: 'images/Multimedia/BESF/BESF.jpg',
+                        aspectRatio: 0.8,
+                        type: 'graphic-design',
+                        description: 'Primary BESF design showcasing professional branding and layout.'
+                    },
+                    {
+                        id: 'besf2',
+                        title: 'E-Logo Design',
+                        image: 'images/Multimedia/BESF/ELOGO2.jpg',
+                        aspectRatio: 1.0,
+                        type: 'logo-design',
+                        description: 'Modern logo design featuring elegant typography and professional branding elements.'
+                    }
+                ]
             },
+            // CIPA Collection Group
             {
-                id: 'mm3',
-                title: 'Cultivating Hope',
-                image: 'images/Multimedia/CULTIVATING HOPE.png',
+                id: 'group_cipa',
+                title: 'CIPA Design Collection',
+                image: 'images/Multimedia/CIPA/CULTIVATING HOPE.png',
                 aspectRatio: 1.4,
                 category: 'multimedia',
                 type: 'poster-design',
-                description: 'Inspirational poster design promoting positivity and hope through thoughtful visual composition.'
+                description: 'CIPA project designs including inspirational posters and professional layouts.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'cipa1',
+                        title: 'Cultivating Hope',
+                        image: 'images/Multimedia/CIPA/CULTIVATING HOPE.png',
+                        aspectRatio: 1.4,
+                        type: 'poster-design',
+                        description: 'Inspirational poster design promoting positivity and hope through thoughtful visual composition.'
+                    },
+                    {
+                        id: 'cipa2',
+                        title: 'ME Design',
+                        image: 'images/Multimedia/CIPA/ME.jpg',
+                        aspectRatio: 1.0,
+                        type: 'personal-design',
+                        description: 'Personal design work showcasing individual creative expression and artistic vision.'
+                    }
+                ]
             },
+            // Anita Design Group
             {
-                id: 'mm4',
-                title: 'E-Logo Design',
-                image: 'images/Multimedia/ELOGO2.jpg',
+                id: 'group_anita',
+                title: 'Anita Design Collection',
+                image: 'images/Multimedia/Anita/Anitah.jpg',
+                aspectRatio: 1.2,
+                category: 'multimedia',
+                type: 'portrait-design',
+                description: 'Professional portrait and design work for Anita showcasing various artistic approaches.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'anita1',
+                        title: 'Anita Portrait 1',
+                        image: 'images/Multimedia/Anita/Anitah.jpg',
+                        aspectRatio: 1.2,
+                        type: 'portrait',
+                        description: 'Professional portrait design showcasing elegant composition and lighting.'
+                    },
+                    {
+                        id: 'anita2',
+                        title: 'Anita Portrait 2',
+                        image: 'images/Multimedia/Anita/Anitah1.jpg',
+                        aspectRatio: 1.1,
+                        type: 'portrait',
+                        description: 'Alternative portrait style demonstrating versatility in artistic approach.'
+                    },
+                    {
+                        id: 'anita3',
+                        title: 'Anita Portrait 3',
+                        image: 'images/Multimedia/Anita/Anitah2.jpg',
+                        aspectRatio: 1.3,
+                        type: 'portrait',
+                        description: 'Creative portrait variation showcasing different artistic interpretation.'
+                    }
+                ]
+            },
+            // CRAXY Design Group
+            {
+                id: 'group_craxy',
+                title: 'CRAXY Design Collection',
+                image: 'images/Multimedia/CRAXY/CRAXY.jpg',
                 aspectRatio: 1.0,
                 category: 'multimedia',
-                type: 'logo-design',
-                description: 'Modern logo design featuring elegant typography and professional branding elements.'
+                type: 'brand-design',
+                description: 'Brand design work for CRAXY featuring modern aesthetics and creative layouts.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'craxy1',
+                        title: 'CRAXY Main Design',
+                        image: 'images/Multimedia/CRAXY/CRAXY.jpg',
+                        aspectRatio: 1.0,
+                        type: 'brand-design',
+                        description: 'Primary CRAXY brand design showcasing modern aesthetic and creative layout.'
+                    },
+                    {
+                        id: 'craxy2',
+                        title: 'CRAXY Alternative',
+                        image: 'images/Multimedia/CRAXY/CRAXY1.jpg',
+                        aspectRatio: 1.1,
+                        type: 'brand-design',
+                        description: 'Alternative CRAXY design variation maintaining brand consistency.'
+                    }
+                ]
             },
+            // DCT Design Group
             {
-                id: 'mm5',
-                title: 'Illusive Art Collection',
-                image: 'images/Multimedia/Illusive Art.jpg',
-                aspectRatio: 1.3,
+                id: 'group_dct',
+                title: 'DCT Design Collection',
+                image: 'images/Multimedia/DCT/DCT.jpg',
+                aspectRatio: 1.2,
                 category: 'multimedia',
-                type: 'digital-art',
-                description: 'Abstract digital artwork exploring visual illusions and creative design concepts.'
+                type: 'corporate-design',
+                description: 'Comprehensive DCT corporate design series showcasing professional branding solutions.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'dct1',
+                        title: 'DCT Main Design',
+                        image: 'images/Multimedia/DCT/DCT.jpg',
+                        aspectRatio: 1.2,
+                        type: 'corporate-design',
+                        description: 'Primary DCT corporate design showcasing professional branding approach.'
+                    },
+                    {
+                        id: 'dct2',
+                        title: 'DCT Design 2',
+                        image: 'images/Multimedia/DCT/DCT1.jpg',
+                        aspectRatio: 1.1,
+                        type: 'corporate-design',
+                        description: 'Second iteration of DCT design maintaining corporate identity.'
+                    },
+                    {
+                        id: 'dct3',
+                        title: 'DCT Design 3',
+                        image: 'images/Multimedia/DCT/DCT2.jpg',
+                        aspectRatio: 1.0,
+                        type: 'corporate-design',
+                        description: 'Third DCT design variation showcasing brand flexibility.'
+                    },
+                    {
+                        id: 'dct4',
+                        title: 'DCT Design 4',
+                        image: 'images/Multimedia/DCT/DCT3.jpg',
+                        aspectRatio: 1.3,
+                        type: 'corporate-design',
+                        description: 'Fourth DCT design demonstrating comprehensive brand development.'
+                    },
+                    {
+                        id: 'dct5',
+                        title: 'DCT Design 5',
+                        image: 'images/Multimedia/DCT/DCT4.jpg',
+                        aspectRatio: 1.2,
+                        type: 'corporate-design',
+                        description: 'Final DCT design completing the corporate identity series.'
+                    }
+                ]
+            },
+            // Graphic Design Pricelist Group
+            {
+                id: 'group_gd_pricelist',
+                title: 'Graphic Design Pricelist',
+                image: 'images/Multimedia/Graphic Design Pricelist/GD Pricelist.jpg',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'promotional',
+                description: 'Professional graphic design service pricing and promotional materials.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'gdp1',
+                        title: 'GD Pricelist',
+                        image: 'images/Multimedia/Graphic Design Pricelist/GD Pricelist.jpg',
+                        aspectRatio: 1.4,
+                        type: 'promotional',
+                        description: 'Comprehensive graphic design service pricing guide with professional layout.'
+                    },
+                    {
+                        id: 'gdp2',
+                        title: 'Graphic Design Pricelist',
+                        image: 'images/Multimedia/Graphic Design Pricelist/Graphic Design Pricelist.jpg',
+                        aspectRatio: 1.3,
+                        type: 'promotional',
+                        description: 'Alternative pricelist design showcasing service offerings and rates.'
+                    }
+                ]
+            },
+            // KheHLA Design Group
+            {
+                id: 'group_khehla',
+                title: 'KheHLA Design Collection',
+                image: 'images/Multimedia/KheHLA/KheHLA.jpg',
+                aspectRatio: 1.2,
+                category: 'multimedia',
+                type: 'brand-design',
+                description: 'Brand design work for KheHLA featuring creative visual identity solutions.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'khehla1',
+                        title: 'KheHLA Main Design',
+                        image: 'images/Multimedia/KheHLA/KheHLA.jpg',
+                        aspectRatio: 1.2,
+                        type: 'brand-design',
+                        description: 'Primary KheHLA brand design showcasing creative visual identity.'
+                    },
+                    {
+                        id: 'khehla2',
+                        title: 'KheHLA Alternative',
+                        image: 'images/Multimedia/KheHLA/KheHLA1.jpg',
+                        aspectRatio: 1.1,
+                        type: 'brand-design',
+                        description: 'Alternative KheHLA design maintaining brand consistency and appeal.'
+                    }
+                ]
+            },
+            // Nail Tech Flyer Group
+            {
+                id: 'group_nail_tech',
+                title: 'Nail Tech Flyer Collection',
+                image: 'images/Multimedia/Nail Tech Flyer/LN.jpg',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'promotional',
+                description: 'Professional nail technician promotional materials and flyer designs.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'nt1',
+                        title: 'LN Nail Tech Flyer',
+                        image: 'images/Multimedia/Nail Tech Flyer/LN.jpg',
+                        aspectRatio: 1.4,
+                        type: 'promotional',
+                        description: 'Professional nail technician flyer with elegant design and clear information.'
+                    },
+                    {
+                        id: 'nt2',
+                        title: 'Nail Art Poster',
+                        image: 'images/Multimedia/Nail Tech Flyer/nailartposter.png',
+                        aspectRatio: 1.3,
+                        type: 'poster-design',
+                        description: 'Elegant nail art promotional poster combining beauty aesthetics with effective marketing design.'
+                    }
+                ]
+            },
+            // Phomolo Design Group
+            {
+                id: 'group_phomolo',
+                title: 'Phomolo Design Collection',
+                image: 'images/Multimedia/Phomolo/Phomolo.jpg',
+                aspectRatio: 1.2,
+                category: 'multimedia',
+                type: 'portrait-design',
+                description: 'Comprehensive portrait and design series for Phomolo showcasing artistic versatility.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'phomolo1',
+                        title: 'Phomolo Portrait 1',
+                        image: 'images/Multimedia/Phomolo/Phomolo.jpg',
+                        aspectRatio: 1.2,
+                        type: 'portrait',
+                        description: 'Primary Phomolo portrait showcasing professional photography and design.'
+                    },
+                    {
+                        id: 'phomolo2',
+                        title: 'Phomolo Portrait 2',
+                        image: 'images/Multimedia/Phomolo/Phomolo1.jpg',
+                        aspectRatio: 1.1,
+                        type: 'portrait',
+                        description: 'Second Phomolo portrait demonstrating alternative artistic approach.'
+                    },
+                    {
+                        id: 'phomolo3',
+                        title: 'Phomolo Portrait 3',
+                        image: 'images/Multimedia/Phomolo/Phomolo2.jpg',
+                        aspectRatio: 1.3,
+                        type: 'portrait',
+                        description: 'Third Phomolo portrait showcasing creative composition and lighting.'
+                    },
+                    {
+                        id: 'phomolo4',
+                        title: 'Phomolo Portrait 4',
+                        image: 'images/Multimedia/Phomolo/Phomolo3.jpg',
+                        aspectRatio: 1.0,
+                        type: 'portrait',
+                        description: 'Fourth Phomolo portrait demonstrating artistic range and technical skill.'
+                    },
+                    {
+                        id: 'phomolo5',
+                        title: 'Phomolo Portrait 5',
+                        image: 'images/Multimedia/Phomolo/Phomolo4.jpg',
+                        aspectRatio: 1.2,
+                        type: 'portrait',
+                        description: 'Final Phomolo portrait completing the comprehensive portrait series.'
+                    }
+                ]
             },
             {
                 id: 'mm6',
                 title: 'Logo Signature',
-                image: 'images/Multimedia/Logosignature-1.png',
+                image: 'images/Multimedia/Logo signature.png',
                 aspectRatio: 0.6,
                 category: 'multimedia',
                 type: 'branding',
@@ -635,15 +1052,6 @@
                 description: 'Cinematic movie poster design featuring dramatic composition and professional layout techniques.'
             },
             {
-                id: 'mm8',
-                title: 'Nail Art Poster',
-                image: 'images/Multimedia/nailartposter-01.png',
-                aspectRatio: 1.4,
-                category: 'multimedia',
-                type: 'poster-design',
-                description: 'Elegant nail art promotional poster combining beauty aesthetics with effective marketing design.'
-            },
-            {
                 id: 'mm9',
                 title: 'Graphic Design Services',
                 image: 'images/Multimedia/📢 GRAPHIC DESIGN SERVICES AVAILABLE!.jpg',
@@ -655,20 +1063,108 @@
             {
                 id: 'mm10',
                 title: 'Lip Sync Animation',
-                image: 'images/Multimedia/🗣_ Lip synchronization animation.jpg',
+                image: 'images/Multimedia/Lip synchronization animation.jpg',
                 aspectRatio: 1.1,
                 category: 'multimedia',
                 type: 'animation',
                 description: 'Technical demonstration of lip synchronization animation showcasing character animation skills.'
             },
             {
-                id: 'mm11',
-                title: 'Digital Portrait 1',
-                image: 'images/Multimedia/469849086_936050065119015_7743347778414988284_n.jpg',
+                id: 'group_gaone',
+                title: 'Gaone Portrait Collection',
+                image: 'images/Multimedia/Gaone/Gaone.jpg',
                 aspectRatio: 1.25,
                 category: 'multimedia',
                 type: 'portrait',
-                description: 'Detailed digital portrait showcasing realistic rendering techniques and artistic expression.'
+                description: 'Professional portrait collection showcasing elegant composition and artistic technique.',
+                isGroup: true,
+                groupItems: [
+                    {
+                        id: 'gaone1',
+                        title: 'Gaone Portrait 1',
+                        image: 'images/Multimedia/Gaone/Gaone.jpg',
+                        aspectRatio: 1.25,
+                        type: 'portrait',
+                        description: 'Main portrait showcasing professional artistic technique.'
+                    },
+                    {
+                        id: 'gaone2',
+                        title: 'Gaone Portrait 2',
+                        image: 'images/Multimedia/Gaone/Gaone1.jpg',
+                        aspectRatio: 1.2,
+                        type: 'portrait',
+                        description: 'Alternative portrait style with creative composition.'
+                    },
+                    {
+                        id: 'gaone3',
+                        title: 'Gaone Portrait 3',
+                        image: 'images/Multimedia/Gaone/Gaone2.jpg',
+                        aspectRatio: 1.3,
+                        type: 'portrait',
+                        description: 'Artistic portrait variation demonstrating versatility.'
+                    },
+                    {
+                        id: 'gaone4',
+                        title: 'Gaone Portrait 4',
+                        image: 'images/Multimedia/Gaone/Gaone3.jpg',
+                        aspectRatio: 1.1,
+                        type: 'portrait',
+                        description: 'Fourth portrait in the collection with unique styling.'
+                    },
+                    {
+                        id: 'gaone5',
+                        title: 'Gaone Portrait 5',
+                        image: 'images/Multimedia/Gaone/Gaone4.png',
+                        aspectRatio: 1.2,
+                        type: 'portrait',
+                        description: 'Final portrait in the collection showcasing artistic versatility.'
+                    }
+                ]
+             },
+             {
+                id: 'mm11b',
+                title: 'MTH Design',
+                image: 'images/Multimedia/MTH.jpg',
+                aspectRatio: 1.2,
+                category: 'multimedia',
+                type: 'graphic-design',
+                description: 'Professional graphic design work featuring modern layout and visual elements.'
+            },
+            {
+                id: 'mm11c',
+                title: 'NS Pricelist',
+                image: 'images/Multimedia/NS Pricelist.jpg',
+                aspectRatio: 1.4,
+                category: 'multimedia',
+                type: 'promotional',
+                description: 'Professional service pricelist design with clear information hierarchy.'
+            },
+            {
+                id: 'mm11d',
+                title: 'BwPL Design',
+                image: 'images/Multimedia/BwPL.jpg',
+                aspectRatio: 1.1,
+                category: 'multimedia',
+                type: 'design',
+                description: 'Creative design work showcasing artistic composition and visual appeal.'
+            },
+            {
+                id: 'mm11e',
+                title: 'Environment Design',
+                image: 'images/Multimedia/environment.jpg',
+                aspectRatio: 1.6,
+                category: 'multimedia',
+                type: 'concept-art',
+                description: 'Environmental concept art showcasing landscape design and atmospheric composition.'
+            },
+            {
+                id: 'mm11f',
+                title: 'Flower Shape Design',
+                image: 'images/Multimedia/flower shape.jpg',
+                aspectRatio: 1.0,
+                category: 'multimedia',
+                type: 'design',
+                description: 'Artistic flower shape design demonstrating organic form and creative composition.'
             },
             {
                 id: 'mm12',
@@ -687,15 +1183,6 @@
                 category: 'multimedia',
                 type: 'abstract',
                 description: 'Abstract artistic composition exploring color theory and experimental visual concepts.'
-            },
-            {
-                id: 'mm14',
-                title: 'Digital Illustration',
-                image: 'images/Multimedia/473356194_959417712782250_2278658404532006115_n.jpg',
-                aspectRatio: 1.3,
-                category: 'multimedia',
-                type: 'illustration',
-                description: 'Professional digital illustration demonstrating storytelling through visual narrative.'
             },
             {
                 id: 'mm15',
@@ -735,296 +1222,158 @@
              },
              {
                  id: 'mm19',
-                 title: 'Digital Portrait 2',
-                 image: 'images/Multimedia/136071839_103074691749894_3446478483048366874_n.jpg',
-                 aspectRatio: 1.0,
+                 title: '3D Cartoon Apple Animation',
+                 image: 'images/Multimedia/Videos/3d 360 camera movement/3D cartoon Apple character.mp4',
+                 aspectRatio: 1.6,
                  category: 'multimedia',
-                 type: 'portrait',
-                 description: 'Stylized digital portrait featuring unique artistic interpretation and creative visual elements.'
+                 type: 'animation',
+                 description: '3D animated character showcasing cartoon apple with personality and movement.'
              },
              {
                  id: 'mm20',
-                 title: 'Creative Portrait',
-                 image: 'images/Multimedia/166456410_135997995124230_3238179062977347146_n.jpg',
-                 aspectRatio: 1.3,
+                 title: 'Lemon Animation',
+                 image: 'images/Multimedia/Videos/3d 360 camera movement/Lemon.mp4',
+                 aspectRatio: 1.0,
                  category: 'multimedia',
-                 type: 'portrait',
-                 description: 'Creative portrait design combining artistic flair with technical digital art proficiency.'
+                 type: 'animation',
+                 description: 'Creative lemon animation demonstrating 3D modeling and animation skills.'
              },
              {
                  id: 'mm21',
-                 title: 'Artistic Design',
-                 image: 'images/Multimedia/166904630_135996275124402_2292834204959366101_n.jpg',
-                 aspectRatio: 1.1,
+                 title: 'Orange Animation',
+                 image: 'images/Multimedia/Videos/3d 360 camera movement/Orange.mp4',
+                 aspectRatio: 1.0,
                  category: 'multimedia',
-                 type: 'digital-art',
-                 description: 'Sophisticated artistic design showcasing mastery of digital art tools and creative vision.'
+                 type: 'animation',
+                 description: 'Dynamic orange animation showcasing fruit character design and motion.'
              },
              {
                  id: 'mm22',
-                 title: 'Creative Illustration',
-                 image: 'images/Multimedia/472282411_952377750152913_48178386814872918_n.jpg',
-                 aspectRatio: 1.4,
+                 title: 'NoseZilla Animation',
+                 image: 'images/Multimedia/Videos/NoseZilla Animation.mp4',
+                 aspectRatio: 1.6,
                  category: 'multimedia',
-                 type: 'illustration'
+                 type: 'animation',
+                 description: 'Creative character animation featuring unique NoseZilla design and movement.'
              },
              {
                  id: 'mm23',
-                 title: 'Digital Design',
-                 image: 'images/Multimedia/472428494_953056056751749_4553522913429396045_n.jpg',
-                 aspectRatio: 0.9,
-                 category: 'multimedia',
-                 type: 'digital-art'
-             },
-             {
-                 id: 'mm24',
-                 title: 'Artistic Creation',
-                 image: 'images/Multimedia/472559709_956042399786448_4076794601199896087_n.jpg',
-                 aspectRatio: 1.2,
-                 category: 'multimedia',
-                 type: 'creative-design'
-             },
-             {
-                 id: 'mm25',
-                 title: 'Visual Art',
-                 image: 'images/Multimedia/472739003_953056250085063_5922751743994347702_n.jpg',
-                 aspectRatio: 1.5,
-                 category: 'multimedia',
-                 type: 'visual-art'
-             },
-             {
-                 id: 'mm26',
-                 title: 'Digital Artwork',
-                 image: 'images/Multimedia/472785969_953063596750995_4524059652196493568_n.jpg',
-                 aspectRatio: 0.8,
-                 category: 'multimedia',
-                 type: 'digital-art'
-             },
-             {
-                 id: 'mm27',
                  title: 'Character Portrait',
-                 image: 'images/Multimedia/473420441_959395292784492_944982300877025773_n.jpg',
+                 image: 'images/Multimedia/473420441_959395292784492_944982300877025773_n (1).jpg',
                  aspectRatio: 1.3,
                  category: 'multimedia',
-                 type: 'character-design'
-             },
-             {
-                 id: 'mm28',
-                 title: 'Creative Design 2',
-                 image: 'images/Multimedia/473615325_959417512782270_4754573526543824880_n.jpg',
-                 aspectRatio: 1.1,
-                 category: 'multimedia',
-                 type: 'creative-design'
-             },
-             {
-                 id: 'mm29',
-                 title: 'Digital Art 2',
-                 image: 'images/Multimedia/474376535_965493782174643_4475091398676248022_n.jpg',
-                 aspectRatio: 1.4,
-                 category: 'multimedia',
-                 type: 'digital-art'
-             },
-             {
-                 id: 'mm30',
-                 title: 'Artistic Portrait 2',
-                 image: 'images/Multimedia/474648025_964842145573140_3680103014009363718_n.jpg',
-                 aspectRatio: 0.9,
-                 category: 'multimedia',
-                 type: 'portrait'
-             },
-             {
-                 id: 'mm31',
-                 title: 'Creative Work',
-                 image: 'images/Multimedia/474727689_965494705507884_619942268105979960_n.jpg',
-                 aspectRatio: 1.2,
-                 category: 'multimedia',
-                 type: 'creative-design'
-             },
-             {
-                 id: 'mm32',
-                 title: 'Digital Creation',
-                 image: 'images/Multimedia/474787028_965494752174546_992884946344023344_n.jpg',
-                 aspectRatio: 1.0,
-                 category: 'multimedia',
-                 type: 'digital-art'
-             },
-             {
-                 id: 'mm33',
-                 title: 'Visual Design',
-                 image: 'images/Multimedia/474828709_965493588841329_6766535837539612958_n.jpg',
-                 aspectRatio: 1.3,
-                 category: 'multimedia',
-                 type: 'visual-design'
+                 type: 'character-design',
+                 description: 'Professional character portrait showcasing detailed digital art and design skills.'
              },
              {
                  id: 'mm34',
-                 title: 'Character Art',
-                 image: 'images/Multimedia/475537086_971258264931528_8676884073356276570_n.jpg',
-                 aspectRatio: 1.5,
-                 category: 'multimedia',
-                 type: 'character-design'
-             },
-             {
-                 id: 'mm35',
                  title: 'Creative Portrait',
                  image: 'images/Multimedia/475752673_970461465011208_3846685113946732652_n.jpg',
                  aspectRatio: 0.8,
                  category: 'multimedia',
-                 type: 'portrait'
+                 type: 'portrait',
+                 description: 'Creative digital portrait showcasing artistic style and technique.'
              },
              {
-                 id: 'mm36',
-                 title: 'Digital Portrait 3',
+                 id: 'mm35',
+                 title: 'Digital Portrait',
                  image: 'images/Multimedia/475774062_971083744948980_5940471440160588200_n.jpg',
                  aspectRatio: 1.1,
                  category: 'multimedia',
-                 type: 'portrait'
+                 type: 'portrait',
+                 description: 'Professional digital portrait with detailed artistic rendering.'
              },
              {
-                 id: 'mm37',
-                 title: 'Artistic Design 2',
-                 image: 'images/Multimedia/482249226_1025093236307909_4114626913291360975_n.jpg',
-                 aspectRatio: 1.4,
-                 category: 'multimedia',
-                 type: 'artistic-design'
-             },
-             {
-                 id: 'mm38',
-                 title: 'Creative Art',
-                 image: 'images/Multimedia/485772061_1029467515870481_7413558905439476267_n.jpg',
-                 aspectRatio: 1.2,
-                 category: 'multimedia',
-                 type: 'creative-art'
-             },
-             {
-                 id: 'mm39',
-                 title: 'Digital Design 2',
-                 image: 'images/Multimedia/486282696_1029467079203858_1995862650663365311_n.jpg',
-                 aspectRatio: 0.9,
-                 category: 'multimedia',
-                 type: 'digital-design'
-             },
-             {
-                 id: 'mm40',
-                 title: 'Visual Art 2',
-                 image: 'images/Multimedia/486996980_1041676211316278_1407234497704843062_n.jpg',
-                 aspectRatio: 1.3,
-                 category: 'multimedia',
-                 type: 'visual-art'
-             },
-             {
-                 id: 'mm41',
-                 title: 'Character Design 2',
+                 id: 'mm36',
+                 title: 'Character Design',
                  image: 'images/Multimedia/488419965_1043392581144641_3885244312682653680_n.jpg',
                  aspectRatio: 1.0,
                  category: 'multimedia',
-                 type: 'character-design'
+                 type: 'character-design',
+                 description: 'Original character design with unique artistic style.'
+             },
+             {
+                 id: 'mm37',
+                 title: 'Movie Poster',
+                 image: 'images/Multimedia/movie.jpg',
+                 aspectRatio: 1.4,
+                 category: 'multimedia',
+                 type: 'poster-design',
+                 description: 'Professional movie poster design with cinematic appeal.'
+             },
+             {
+                 id: 'mm38',
+                 title: 'Digital Art Portrait',
+                 image: 'images/Multimedia/473420441_959395292784492_944982300877025773_n (1).jpg',
+                 aspectRatio: 1.2,
+                 category: 'multimedia',
+                 type: 'digital-art',
+                 description: 'Artistic digital portrait with creative styling and composition.'
+             },
+             {
+                 id: 'mm39',
+                 title: 'Professional Portrait',
+                 image: 'images/Multimedia/475416401_970462681677753_2942346849733692134_n.jpg',
+                 aspectRatio: 0.9,
+                 category: 'multimedia',
+                 type: 'portrait',
+                 description: 'Professional portrait photography with artistic post-processing.'
+             },
+             {
+                 id: 'mm40',
+                 title: 'Creative Design',
+                 image: 'images/Multimedia/485042287_1027770212706878_398404829938564023_n.jpg',
+                 aspectRatio: 1.3,
+                 category: 'multimedia',
+                 type: 'creative-design',
+                 description: 'Innovative creative design showcasing artistic vision and technical skill.'
+             },
+             {
+                 id: 'mm41',
+                 title: 'Animtra Animation',
+                 image: 'images/Multimedia/Videos/Animtra.mp4',
+                 aspectRatio: 1.6,
+                 category: 'multimedia',
+                 type: 'animation',
+                 description: 'Creative animation showcasing character movement and storytelling techniques.'
              },
              {
                  id: 'mm42',
-                 title: 'Artistic Creation 2',
-                 image: 'images/Multimedia/489959435_1041676257982940_5092184925787691608_n.jpg',
-                 aspectRatio: 1.5,
+                 title: 'Apple Animation',
+                 image: 'images/Multimedia/Videos/Apple Animation.mp4',
+                 aspectRatio: 1.0,
                  category: 'multimedia',
-                 type: 'artistic-creation'
+                 type: 'animation',
+                 description: 'Detailed apple animation demonstrating 3D modeling and realistic movement.'
              },
              {
                  id: 'mm43',
-                 title: 'Digital Art 3',
-                 image: 'images/Multimedia/490524935_1047669097383656_764562201270797126_n.jpg',
-                 aspectRatio: 0.8,
+                 title: 'Death Note Animation',
+                 image: 'images/Multimedia/Videos/Death note.mp4',
+                 aspectRatio: 1.6,
                  category: 'multimedia',
-                 type: 'digital-art'
+                 type: 'animation',
+                 description: 'Dramatic Death Note inspired animation with cinematic storytelling elements.'
              },
              {
                  id: 'mm44',
-                 title: 'Creative Design 3',
-                 image: 'images/Multimedia/493522282_1072522654898300_9102169032651131427_n.jpg',
-                 aspectRatio: 1.1,
+                 title: 'Lip Synchronization Animation',
+                 image: 'images/Multimedia/Videos/Lip synchronization animation.mp4',
+                 aspectRatio: 1.6,
                  category: 'multimedia',
-                 type: 'creative-design'
+                 type: 'animation',
+                 description: 'Advanced lip sync animation demonstrating character dialogue and facial expressions.'
              },
              {
                  id: 'mm45',
-                 title: 'Visual Design 2',
-                 image: 'images/Multimedia/493872149_1072522691564963_1422580322955468728_n.jpg',
-                 aspectRatio: 1.4,
+                 title: 'Moody Animation',
+                 image: 'images/Multimedia/Videos/moody.mp4',
+                 aspectRatio: 1.6,
                  category: 'multimedia',
-                 type: 'visual-design'
-             },
-             {
-                 id: 'mm46',
-                 title: 'Artistic Work',
-                 image: 'images/Multimedia/493939104_1071574698326429_8701940252065052579_n.jpg',
-                 aspectRatio: 1.2,
-                 category: 'multimedia',
-                 type: 'artistic-work'
-             },
-             {
-                 id: 'mm47',
-                 title: 'Digital Creation 2',
-                 image: 'images/Multimedia/494749821_1072415621575670_6564369508355121380_n.jpg',
-                 aspectRatio: 0.9,
-                 category: 'multimedia',
-                 type: 'digital-creation'
-             },
-             {
-                 id: 'mm48',
-                 title: 'Creative Art 2',
-                 image: 'images/Multimedia/495389776_1072522724898293_5557781368938430890_n.jpg',
-                 aspectRatio: 1.3,
-                 category: 'multimedia',
-                 type: 'creative-art'
-             },
-             {
-                 id: 'mm49',
-                 title: 'Visual Art 3',
-                 image: 'images/Multimedia/495617690_1072522861564946_5727592283544115566_n.jpg',
-                 aspectRatio: 1.0,
-                 category: 'multimedia',
-                 type: 'visual-art'
-             },
-             {
-                 id: 'mm50',
-                 title: 'Digital Design 3',
-                 image: 'images/Multimedia/496023100_1072522818231617_7801718320681168196_n.jpg',
-                 aspectRatio: 1.5,
-                 category: 'multimedia',
-                 type: 'digital-design'
-             },
-             {
-                 id: 'mm51',
-                 title: 'Artistic Design 3',
-                 image: 'images/Multimedia/500068474_1076775804472985_5125279754667778816_n.jpg',
-                 aspectRatio: 0.8,
-                 category: 'multimedia',
-                 type: 'artistic-design'
-             },
-             {
-                 id: 'mm52',
-                 title: 'Illusive Art 1',
-                 image: 'images/Multimedia/Illusive Art (1).jpg',
-                 aspectRatio: 1.1,
-                 category: 'multimedia',
-                 type: 'illusive-art'
-             },
-             {
-                 id: 'mm53',
-                 title: 'Illusive Art 2',
-                 image: 'images/Multimedia/Illusive Art (2).jpg',
-                 aspectRatio: 1.4,
-                 category: 'multimedia',
-                 type: 'illusive-art'
-             },
-             {
-                 id: 'mm54',
-                 title: 'Illusive Art 3',
-                 image: 'images/Multimedia/Illusive Art (3).jpg',
-                 aspectRatio: 1.2,
-                 category: 'multimedia',
-                 type: 'illusive-art'
+                 type: 'animation',
+                 description: 'Atmospheric moody animation exploring emotional storytelling through visual narrative.'
              }
-         ];
+          ];
 
         let currentFilter = 'software';
 
@@ -1213,19 +1562,61 @@
                 placeholder.className = 'w-full bg-gray-200 animate-pulse rounded-lg';
                 placeholder.style.height = `${itemHeight}px`;
                 
-                masonryItem.innerHTML = `
-                    <div class="relative overflow-hidden rounded-lg bg-gray-200">
-                        <img src="${item.image}" alt="${item.title}" loading="lazy" 
-                             class="w-full h-auto object-cover transition-all duration-500 hover:scale-105"
-                             style="min-height: 200px; background: #f3f4f6;"
-                             onload="this.style.minHeight='auto'; this.parentElement.parentElement.classList.remove('opacity-0', 'translate-y-4'); this.parentElement.classList.remove('bg-gray-200');"
-                             onerror="this.parentElement.parentElement.style.display='none'">
-                    </div>
-                    <div class="masonry-item-content p-3">
-                        <h3 class="masonry-item-title text-sm font-semibold text-gray-800 mb-1 line-clamp-2">${item.title}</h3>
-                        <p class="masonry-item-type text-xs text-gray-600 capitalize">${item.type.replace('-', ' ')}</p>
-                    </div>
-                `;
+                // Check if item is a video
+                const isVideo = item.image.toLowerCase().includes('.mp4') || item.image.toLowerCase().includes('.webm');
+                
+                if (isVideo) {
+                    masonryItem.innerHTML = `
+                        <div class="relative overflow-hidden rounded-lg bg-gray-200">
+                            <video class="w-full h-auto object-cover transition-all duration-500 hover:scale-105 video-preview" 
+                                   style="min-height: 200px; background: #f3f4f6;"
+                                   onloadeddata="this.style.minHeight='auto'; this.parentElement.parentElement.classList.remove('opacity-0', 'translate-y-4'); this.parentElement.classList.remove('bg-gray-200');" 
+                                   muted loop preload="metadata">
+                                <source src="${item.image}" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="masonry-item-content p-3">
+                            <h3 class="masonry-item-title text-sm font-semibold text-gray-800 mb-1 line-clamp-2">${item.title}</h3>
+                            <p class="masonry-item-type text-xs text-gray-600 capitalize">${item.type.replace('-', ' ')}</p>
+                        </div>
+                    `;
+                    
+                    // Add hover functionality for video preview
+                    const videoElement = masonryItem.querySelector('.video-preview');
+                    let hoverTimeout;
+                    
+                    masonryItem.addEventListener('mouseenter', () => {
+                        // Delay video play to avoid accidental triggers
+                        hoverTimeout = setTimeout(() => {
+                            if (videoElement) {
+                                videoElement.currentTime = 0;
+                                videoElement.play().catch(() => {});
+                            }
+                        }, 300);
+                    });
+                    
+                    masonryItem.addEventListener('mouseleave', () => {
+                        clearTimeout(hoverTimeout);
+                        if (videoElement) {
+                            videoElement.pause();
+                            videoElement.currentTime = 0;
+                        }
+                    });
+                } else {
+                    masonryItem.innerHTML = `
+                        <div class="relative overflow-hidden rounded-lg bg-gray-200">
+                            <img src="${item.image}" alt="${item.title}" loading="lazy" 
+                                 class="w-full h-auto object-cover transition-all duration-500 hover:scale-105"
+                                 style="min-height: 200px; background: #f3f4f6;"
+                                 onload="this.style.minHeight='auto'; this.parentElement.parentElement.classList.remove('opacity-0', 'translate-y-4'); this.parentElement.classList.remove('bg-gray-200');"
+                                 onerror="this.parentElement.parentElement.style.display='none'">
+                        </div>
+                        <div class="masonry-item-content p-3">
+                            <h3 class="masonry-item-title text-sm font-semibold text-gray-800 mb-1 line-clamp-2">${item.title}</h3>
+                            <p class="masonry-item-type text-xs text-gray-600 capitalize">${item.type.replace('-', ' ')}</p>
+                        </div>
+                    `;
+                }
                 
                 // Add click event listener to open modal
                 masonryItem.addEventListener('click', () => openModal(item));
@@ -1321,9 +1712,44 @@
         // Modal functionality
         let currentZoom = 1;
         let currentItem = null;
+        let currentGroup = null;
+        let currentGroupIndex = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let imageOffsetX = 0;
+        let imageOffsetY = 0;
         
         function openModal(item) {
             const modal = document.getElementById('multimediaModal');
+            const groupNavigation = document.getElementById('groupNavigation');
+            
+            // Check if this is a grouped item
+            if (item.isGroup && item.groupItems) {
+                currentGroup = item.groupItems;
+                currentGroupIndex = 0;
+                currentItem = currentGroup[0];
+                
+                // Show group navigation
+                groupNavigation.classList.remove('hidden');
+                updateGroupNavigation();
+            } else {
+                currentGroup = null;
+                currentItem = item;
+                
+                // Hide group navigation
+                groupNavigation.classList.add('hidden');
+            }
+            
+            // Display the current item
+            displayModalContent(currentItem);
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function displayModalContent(item) {
             const modalImage = document.getElementById('modalImage');
             const modalVideo = document.getElementById('modalVideo');
             const modalTitle = document.getElementById('modalTitle');
@@ -1332,8 +1758,10 @@
             const modalDescriptionContainer = document.getElementById('modalDescriptionContainer');
             const zoomControls = document.getElementById('zoomControls');
             
-            currentItem = item;
             currentZoom = 1;
+            imageOffsetX = 0;
+            imageOffsetY = 0;
+            isDragging = false;
             
             // Set modal content
             modalTitle.textContent = item.title;
@@ -1365,24 +1793,64 @@
                 zoomControls.classList.remove('hidden');
                 updateZoomLevel();
             }
+        }
+        
+        function updateGroupNavigation() {
+            if (!currentGroup) return;
             
-            // Show modal
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
+            const currentItemIndex = document.getElementById('currentItemIndex');
+            const totalItems = document.getElementById('totalItems');
+            const prevBtn = document.getElementById('prevItem');
+            const nextBtn = document.getElementById('nextItem');
+            
+            currentItemIndex.textContent = currentGroupIndex + 1;
+            totalItems.textContent = currentGroup.length;
+            
+            // Enable/disable navigation buttons
+            prevBtn.disabled = currentGroupIndex === 0;
+            nextBtn.disabled = currentGroupIndex === currentGroup.length - 1;
+            
+            // Update button opacity based on state
+            prevBtn.style.opacity = currentGroupIndex === 0 ? '0.5' : '1';
+            nextBtn.style.opacity = currentGroupIndex === currentGroup.length - 1 ? '0.5' : '1';
+        }
+        
+        function navigateGroup(direction) {
+            if (!currentGroup) return;
+            
+            if (direction === 'prev' && currentGroupIndex > 0) {
+                currentGroupIndex--;
+            } else if (direction === 'next' && currentGroupIndex < currentGroup.length - 1) {
+                currentGroupIndex++;
+            }
+            
+            currentItem = currentGroup[currentGroupIndex];
+            displayModalContent(currentItem);
+            updateGroupNavigation();
         }
         
         function closeModal() {
             const modal = document.getElementById('multimediaModal');
             const modalVideo = document.getElementById('modalVideo');
             const sharePopup = document.getElementById('sharePopup');
+            const groupNavigation = document.getElementById('groupNavigation');
             
             // Hide modal and share popup
             modal.classList.add('hidden');
             sharePopup.classList.add('hidden');
+            groupNavigation.classList.add('hidden');
             document.body.style.overflow = 'auto';
             
-            // Reset zoom
+            // Reset zoom and drag
             currentZoom = 1;
+            imageOffsetX = 0;
+            imageOffsetY = 0;
+            isDragging = false;
+            
+            // Reset group variables
+            currentGroup = null;
+            currentGroupIndex = 0;
+            currentItem = null;
             
             // Pause video if playing
             modalVideo.pause();
@@ -1393,7 +1861,20 @@
             const modalImage = document.getElementById('modalImage');
             
             zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
-            modalImage.style.transform = `scale(${currentZoom})`;
+            modalImage.style.transform = `scale(${currentZoom}) translate(${imageOffsetX}px, ${imageOffsetY}px)`;
+            
+            // Enable/disable dragging based on zoom level
+            const mediaContainer = document.getElementById('mediaContainer');
+            if (currentZoom > 1) {
+                mediaContainer.style.cursor = 'grab';
+                modalImage.style.cursor = 'grab';
+            } else {
+                mediaContainer.style.cursor = 'default';
+                modalImage.style.cursor = 'default';
+                // Reset position when zoom is 1 or less
+                imageOffsetX = 0;
+                imageOffsetY = 0;
+            }
         }
         
         function zoomIn() {
@@ -1412,6 +1893,8 @@
         
         function resetZoom() {
             currentZoom = 1;
+            imageOffsetX = 0;
+            imageOffsetY = 0;
             updateZoomLevel();
         }
         
@@ -1489,6 +1972,14 @@
                 if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                     closeModal();
                 }
+                // Navigation with arrow keys
+                if (!modal.classList.contains('hidden') && currentGroup) {
+                    if (e.key === 'ArrowLeft') {
+                        navigateGroup('prev');
+                    } else if (e.key === 'ArrowRight') {
+                        navigateGroup('next');
+                    }
+                }
             });
             
             // Zoom controls event listeners
@@ -1505,6 +1996,70 @@
             document.getElementById('shareWhatsApp').addEventListener('click', shareToWhatsApp);
             document.getElementById('shareFacebook').addEventListener('click', shareToFacebook);
             document.getElementById('shareTwitter').addEventListener('click', shareToTwitter);
+            
+            // Group navigation event listeners
+            document.getElementById('prevItem').addEventListener('click', () => navigateGroup('prev'));
+            document.getElementById('nextItem').addEventListener('click', () => navigateGroup('next'));
+            
+            // Image drag functionality for zoomed images
+            const modalImage = document.getElementById('modalImage');
+            const mediaContainer = document.getElementById('mediaContainer');
+            
+            // Mouse events for dragging
+            modalImage.addEventListener('mousedown', function(e) {
+                if (currentZoom > 1) {
+                    isDragging = true;
+                    dragStartX = e.clientX - imageOffsetX;
+                    dragStartY = e.clientY - imageOffsetY;
+                    modalImage.style.cursor = 'grabbing';
+                    mediaContainer.style.cursor = 'grabbing';
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (isDragging && currentZoom > 1) {
+                    imageOffsetX = (e.clientX - dragStartX) * 0.5;
+                    imageOffsetY = (e.clientY - dragStartY) * 0.5;
+                    updateZoomLevel();
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    if (currentZoom > 1) {
+                        modalImage.style.cursor = 'grab';
+                        mediaContainer.style.cursor = 'grab';
+                    }
+                }
+            });
+            
+            // Touch events for mobile dragging
+            modalImage.addEventListener('touchstart', function(e) {
+                if (currentZoom > 1 && e.touches.length === 1) {
+                    isDragging = true;
+                    const touch = e.touches[0];
+                    dragStartX = touch.clientX - imageOffsetX;
+                    dragStartY = touch.clientY - imageOffsetY;
+                    e.preventDefault();
+                }
+            });
+            
+            modalImage.addEventListener('touchmove', function(e) {
+                if (isDragging && currentZoom > 1 && e.touches.length === 1) {
+                    const touch = e.touches[0];
+                    imageOffsetX = (touch.clientX - dragStartX) * 0.5;
+                    imageOffsetY = (touch.clientY - dragStartY) * 0.5;
+                    updateZoomLevel();
+                    e.preventDefault();
+                }
+            });
+            
+            modalImage.addEventListener('touchend', function() {
+                isDragging = false;
+            });
             
             // Close share popup when clicking outside
             document.addEventListener('click', function(e) {
