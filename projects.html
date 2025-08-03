@@ -2229,23 +2229,18 @@
                     initialTouchX = e.touches[0].clientX;
                     initialTouchY = e.touches[0].clientY;
                     
-                    // Double tap detection for zoom
-                    if (tapLength < 500 && tapLength > 0) {
+                    // Double tap detection for zoom (desktop only)
+                    if (tapLength < 500 && tapLength > 0 && window.innerWidth > 1024) {
                         e.preventDefault();
-                        if (window.innerWidth <= 1024) {
-                            // On mobile/tablet, double tap toggles fullscreen
-                            toggleFullscreen();
+                        // On desktop, double tap zooms
+                        if (currentZoom === 1) {
+                            currentZoom = 2;
                         } else {
-                            // On desktop, double tap zooms
-                            if (currentZoom === 1) {
-                                currentZoom = 2;
-                            } else {
-                                currentZoom = 1;
-                                imageOffsetX = 0;
-                                imageOffsetY = 0;
-                            }
-                            updateZoomLevel();
+                            currentZoom = 1;
+                            imageOffsetX = 0;
+                            imageOffsetY = 0;
                         }
+                        updateZoomLevel();
                     }
                     
                     lastTap = currentTime;
@@ -2305,8 +2300,8 @@
                 // Single tap handling - only if touch was brief and didn't move much
                 if (e.changedTouches.length === 1 && !hasMoved && touchDuration < 300 && !isPinching) {
                     if (window.innerWidth <= 1024) {
-                        // On mobile/tablet, single tap toggles UI visibility
-                        toggleMobileUI();
+                        // On mobile/tablet, single tap toggles fullscreen
+                        toggleFullscreen();
                     }
                 }
             });
