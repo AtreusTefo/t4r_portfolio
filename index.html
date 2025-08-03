@@ -214,7 +214,7 @@
             overflow: hidden;
             white-space: nowrap;
             margin: 0 auto;
-            letter-spacing: .15em;
+            letter-spacing: normal;
         }
         
         .typewriter::after {
@@ -1312,8 +1312,7 @@
                         return;
                     }
                     
-                    // Store original content and classes
-                    const originalContent = element.innerHTML;
+                    // Store original classes
                     const originalClasses = element.className;
                     
                     // Add typewriter class and clear content
@@ -1338,9 +1337,8 @@
                                 clearInterval(timer);
                                 setTimeout(() => {
                                     element.classList.add('typewriter-complete');
-                                    // Restore original content and classes after animation
-                                    element.innerHTML = originalContent;
-                                    element.className = originalClasses;
+                                    // Keep the final content, just remove typewriter class
+                                    element.classList.remove('typewriter');
                                     resolve();
                                 }, 500);
                             }
@@ -1356,9 +1354,8 @@
                                 clearInterval(timer);
                                 setTimeout(() => {
                                     element.classList.add('typewriter-complete');
-                                    // Restore original content and classes after animation
-                                    element.innerHTML = originalContent;
-                                    element.className = originalClasses;
+                                    // Keep the final content, just remove typewriter class
+                                    element.classList.remove('typewriter');
                                     resolve();
                                 }, 500);
                             }
@@ -1381,7 +1378,7 @@
             
             // Start typewriter effects sequentially
             await typewriterEffect('typewriter-h1', '', 150, 500); // h1 handles its own content
-            await typewriterEffect('typewriter-h2', 'Software Engineer & Multimedia Specialist', 80, 0); // Start immediately after h1 completes
+            // h2 typewriter effect removed - text will display normally
         }
         
         // Start typewriter effects when DOM is loaded
