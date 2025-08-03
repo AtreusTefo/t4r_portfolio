@@ -1588,10 +1588,23 @@
             });
         }
         
+        // Cleanup function for video observers
+        function cleanupVideoObservers() {
+            const videos = document.querySelectorAll('.video-preview');
+            videos.forEach(video => {
+                if (video.videoObserver) {
+                    video.videoObserver.disconnect();
+                    video.videoObserver = null;
+                }
+            });
+        }
+        
         function renderMasonryGrid(reset = false) {
             const projectsContainer = document.getElementById('projectsContainer');
             
             if (reset) {
+                // Cleanup video observers before clearing content
+                cleanupVideoObservers();
                 projectsContainer.innerHTML = '';
                 currentPage = 1;
                 allItemsLoaded = false;
@@ -1683,27 +1696,54 @@
                         </div>
                     `;
                     
-                    // Add hover functionality for video preview
+                    // Add hover functionality for video preview on desktop
                     const videoElement = masonryItem.querySelector('.video-preview');
                     let hoverTimeout;
                     
-                    masonryItem.addEventListener('mouseenter', () => {
-                        // Delay video play to avoid accidental triggers
-                        hoverTimeout = setTimeout(() => {
+                    // Desktop hover functionality
+                    if (window.innerWidth > 1024) {
+                        masonryItem.addEventListener('mouseenter', () => {
+                            // Delay video play to avoid accidental triggers
+                            hoverTimeout = setTimeout(() => {
+                                if (videoElement) {
+                                    videoElement.currentTime = 0;
+                                    videoElement.play().catch(() => {});
+                                }
+                            }, 300);
+                        });
+                        
+                        masonryItem.addEventListener('mouseleave', () => {
+                            clearTimeout(hoverTimeout);
                             if (videoElement) {
+                                videoElement.pause();
                                 videoElement.currentTime = 0;
-                                videoElement.play().catch(() => {});
                             }
-                        }, 300);
-                    });
+                        });
+                    }
                     
-                    masonryItem.addEventListener('mouseleave', () => {
-                        clearTimeout(hoverTimeout);
-                        if (videoElement) {
-                            videoElement.pause();
-                            videoElement.currentTime = 0;
-                        }
-                    });
+                    // Mobile/tablet autoplay when 50% visible
+                    if (window.innerWidth <= 1024) {
+                        const videoObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                const video = entry.target;
+                                if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                                    // Video is 50% or more visible - start autoplay
+                                    video.currentTime = 0;
+                                    video.play().catch(() => {});
+                                } else {
+                                    // Video is less than 50% visible - pause
+                                    video.pause();
+                                }
+                            });
+                        }, {
+                            threshold: 0.5 // Trigger when 50% visible
+                        });
+                        
+                        videoObserver.observe(videoElement);
+                        
+                        // Store observer reference for cleanup
+                        videoElement.videoObserver = videoObserver;
+                    }
                 } else {
                     masonryItem.innerHTML = `
                         <div class="relative overflow-hidden rounded-lg bg-gray-200">
@@ -2110,6 +2150,8 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const filter = this.getAttribute('data-filter');
+                    // Cleanup video observers before changing filter
+                    cleanupVideoObservers();
                     filterProjects(filter);
                 });
             });
@@ -2532,6 +2574,22 @@
         // Add event listeners for theme toggle buttons
         document.getElementById('themeToggle').addEventListener('click', toggleTheme);
         document.getElementById('mobileThemeToggle').addEventListener('click', toggleTheme);
+        
+        // Cleanup video observers on page unload
+        window.addEventListener('beforeunload', function() {
+            cleanupVideoObservers();
+        });
+        
+        // Cleanup video observers when page visibility changes (mobile optimization)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Pause all videos when page becomes hidden
+                const videos = document.querySelectorAll('.video-preview');
+                videos.forEach(video => {
+                    video.pause();
+                });
+            }
+        });
     </script>
     
     <!-- WhatsApp Floating Button -->
