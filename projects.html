@@ -1518,13 +1518,33 @@
         let currentFilter = 'software';
 
         // Filter functionality
+        // Debounced filter function to prevent rapid changes
+        let filterTimeout = null;
+        let lastFilterCategory = null;
+        
         function filterProjects(category) {
-            currentFilter = category;
+            // Prevent duplicate filter calls
+            if (category === lastFilterCategory && !filterTimeout) {
+                return;
+            }
             
-            // Store current scroll position to prevent unwanted jumps
-            const currentScrollY = window.scrollY;
+            // Clear any pending filter operations
+            if (filterTimeout) {
+                clearTimeout(filterTimeout);
+            }
             
-            // Update button styles
+            // Update button styles immediately for better UX
+            updateFilterButtons(category);
+            
+            // Debounce the actual filtering
+            filterTimeout = setTimeout(() => {
+                executeFilter(category);
+                filterTimeout = null;
+                lastFilterCategory = category;
+            }, 100);
+        }
+        
+        function updateFilterButtons(category) {
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('bg-purple-600', 'text-white');
                 btn.classList.add('bg-gray-200', 'text-gray-700');
@@ -1535,6 +1555,13 @@
                 activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
                 activeBtn.classList.add('bg-purple-600', 'text-white');
             }
+        }
+        
+        function executeFilter(category) {
+            currentFilter = category;
+            
+            // Store current scroll position to prevent unwanted jumps
+            const currentScrollY = window.scrollY;
             
             // Handle multimedia filter differently
             if (category === 'multimedia') {
@@ -1549,7 +1576,7 @@
                     if (Math.abs(window.scrollY - currentScrollY) > 100) {
                         window.scrollTo({ top: currentScrollY, behavior: 'instant' });
                     }
-                }, 100);
+                }, 150);
             } else {
                 // Filter regular projects
                 const filteredProjects = projects.filter(project => project.category === category);
@@ -1560,7 +1587,7 @@
                     if (Math.abs(window.scrollY - currentScrollY) > 100) {
                         window.scrollTo({ top: currentScrollY, behavior: 'instant' });
                     }
-                }, 50);
+                }, 75);
             }
         }
 
@@ -1636,6 +1663,35 @@
         
         // Add scroll event listener with passive option
         window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Debounced resize handler to recalculate masonry grid
+        let resizeTimeout = null;
+        function handleResize() {
+            if (resizeTimeout) {
+                clearTimeout(resizeTimeout);
+            }
+            
+            resizeTimeout = setTimeout(() => {
+                if (currentFilter === 'multimedia') {
+                    // Store scroll position
+                    const scrollPos = window.pageYOffset;
+                    
+                    // Recalculate masonry grid
+                    renderMasonryGrid(true);
+                    
+                    // Restore scroll position after layout settles
+                    setTimeout(() => {
+                        window.scrollTo({
+                            top: scrollPos,
+                            behavior: 'instant'
+                        });
+                    }, 100);
+                }
+            }, 300);
+        }
+        
+        // Add resize event listener
+        window.addEventListener('resize', handleResize, { passive: true });
         
         // Preload next batch of images for smooth scrolling
         function preloadImages(items) {
@@ -1871,21 +1927,47 @@
                     }, index * 25); // Faster staggered animation
                 }, index * 15); // Reduced delay for faster rendering
                 
+                // Track if height has been updated to prevent double counting
+                let heightUpdated = false;
+                
                 // Update column height more accurately
-                // Wait for image/video to load before calculating height
                 const updateHeight = () => {
+                    if (heightUpdated) return; // Prevent double counting
+                    
                     const rect = masonryItem.getBoundingClientRect();
-                    columnHeights[shortestColumnIndex] += rect.height + 16; // 16px gap
+                    if (rect.height > 0) {
+                        columnHeights[shortestColumnIndex] += rect.height + 16; // 16px gap
+                        heightUpdated = true;
+                    }
                 };
                 
-                // Update height after content loads
+                // Initial height estimation to prevent layout shifts
+                const estimatedHeight = baseWidth * item.aspectRatio + 60; // 60px for content padding
+                columnHeights[shortestColumnIndex] += estimatedHeight;
+                
+                // Update height after content loads and adjust the difference
                 const media = masonryItem.querySelector('img, video');
                 if (media) {
-                    media.addEventListener('load', updateHeight, { once: true });
-                    media.addEventListener('loadeddata', updateHeight, { once: true });
+                    const adjustHeight = () => {
+                        if (heightUpdated) return;
+                        
+                        const rect = masonryItem.getBoundingClientRect();
+                        if (rect.height > 0) {
+                            // Remove estimated height and add actual height
+                            columnHeights[shortestColumnIndex] -= estimatedHeight;
+                            columnHeights[shortestColumnIndex] += rect.height + 16;
+                            heightUpdated = true;
+                        }
+                    };
+                    
+                    media.addEventListener('load', adjustHeight, { once: true });
+                    media.addEventListener('loadeddata', adjustHeight, { once: true });
+                    
+                    // Fallback timeout
+                    setTimeout(adjustHeight, 500);
                 } else {
-                    // Fallback for immediate update
-                    setTimeout(updateHeight, 100);
+                    // For items without media, mark as updated
+                    heightUpdated = true;
                 }
             });
             
@@ -1900,31 +1982,50 @@
 
         // Pinterest-style infinite scroll with Intersection Observer
         function setupInfiniteScroll() {
-            removeLoadMoreTrigger(); // Remove existing trigger
+            // Ensure clean state before setting up
+            removeLoadMoreTrigger();
             
-            // Create invisible trigger element
+            // Only proceed if we have more items to load
+            if (allItemsLoaded) return;
+            
+            // Create trigger element with better positioning
             const trigger = document.createElement('div');
             trigger.id = 'loadMoreTrigger';
-            trigger.className = 'w-full h-20 flex items-center justify-center';
-            trigger.innerHTML = '<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>';
+            trigger.className = 'w-full h-10 flex items-center justify-center opacity-50 transition-opacity duration-300';
+            trigger.innerHTML = '<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>';
             
             const projectsContainer = document.getElementById('projectsContainer');
-            projectsContainer.parentNode.insertBefore(trigger, projectsContainer.nextSibling);
+            const parent = projectsContainer.parentNode;
             
-            // Setup intersection observer
+            // Insert trigger after projects container with proper spacing
+            const spacer = document.createElement('div');
+            spacer.className = 'h-8'; // Add some space
+            parent.insertBefore(spacer, projectsContainer.nextSibling);
+            parent.insertBefore(trigger, spacer.nextSibling);
+            
+            // Setup intersection observer with better configuration
             if (intersectionObserver) {
                 intersectionObserver.disconnect();
+                intersectionObserver = null;
             }
             
             intersectionObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && !isLoading && !allItemsLoaded) {
-                        loadMoreItems();
+                        // Add small delay to prevent rapid firing
+                        if (!entry.target.dataset.triggered) {
+                            entry.target.dataset.triggered = 'true';
+                            setTimeout(() => {
+                                loadMoreItems();
+                                entry.target.dataset.triggered = 'false';
+                            }, 100);
+                        }
                     }
                 });
             }, {
-                rootMargin: '50px', // Reduced margin to prevent premature loading
-                threshold: 0.1 // Only trigger when 10% of trigger is visible
+                root: null,
+                rootMargin: '100px 0px', // Only vertical margin
+                threshold: [0, 0.25, 0.5, 0.75, 1] // Multiple thresholds for better control
             });
             
             intersectionObserver.observe(trigger);
@@ -1939,26 +2040,60 @@
                 trigger.style.opacity = '1';
             }
             
+            // Store current scroll position to prevent jumps
+            const scrollPosition = window.pageYOffset;
+            const documentHeight = document.documentElement.scrollHeight;
+            
             // Simulate network delay for smooth UX (like Pinterest)
             setTimeout(() => {
                 currentPage++;
                 renderMasonryGrid(false);
-                isLoading = false;
                 
-                if (trigger && !allItemsLoaded) {
-                    trigger.style.opacity = '0.5';
-                }
-            }, 200); // Reduced delay for faster loading
+                // Check for scroll position changes after rendering
+                setTimeout(() => {
+                    const newScrollPosition = window.pageYOffset;
+                    const newDocumentHeight = document.documentElement.scrollHeight;
+                    
+                    // If scroll position changed unexpectedly, restore it
+                    if (Math.abs(newScrollPosition - scrollPosition) > 100) {
+                        window.scrollTo({
+                            top: scrollPosition,
+                            behavior: 'instant'
+                        });
+                    }
+                    
+                    isLoading = false;
+                    
+                    if (trigger && !allItemsLoaded) {
+                        trigger.style.opacity = '0.5';
+                    }
+                }, 150); // Allow time for layout to settle
+            }, 250); // Slightly increased delay for better stability
         }
         
         function removeLoadMoreTrigger() {
+            // Clean up intersection observer
+            if (intersectionObserver) {
+                intersectionObserver.disconnect();
+                intersectionObserver = null;
+            }
+            
+            // Remove trigger element
             const trigger = document.getElementById('loadMoreTrigger');
             if (trigger) {
-                if (intersectionObserver) {
-                    intersectionObserver.unobserve(trigger);
-                }
                 trigger.remove();
             }
+            
+            // Remove any spacer elements that might have been added
+            const spacers = document.querySelectorAll('.h-8');
+            spacers.forEach(spacer => {
+                // Only remove spacers that are likely from our infinite scroll setup
+                if (spacer.nextElementSibling && spacer.nextElementSibling.id === 'loadMoreTrigger') {
+                    spacer.remove();
+                } else if (spacer.previousElementSibling && spacer.previousElementSibling.id === 'projectsContainer') {
+                    spacer.remove();
+                }
+            });
         }
 
         // Modal functionality
