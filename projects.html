@@ -92,6 +92,17 @@
         }
         
         /* Filter buttons */
+        .filter-btn {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            position: relative;
+            z-index: 10;
+        }
+        
         .filter-btn.bg-gray-200 {
             background-color: var(--bg-gray-200) !important;
             color: var(--text-gray-700) !important;
@@ -272,6 +283,16 @@
                 object-fit: contain;
                 transition: transform 0.2s ease-out;
                 will-change: transform;
+            }
+            
+            /* Improve masonry item touch behavior */
+            .masonry-item {
+                touch-action: pan-y;
+                -webkit-tap-highlight-color: transparent;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
             }
             
             #mediaContainer {
@@ -1762,7 +1783,7 @@
                         itemTouchStartX = e.touches[0].clientX;
                         itemTouchStartY = e.touches[0].clientY;
                     }
-                });
+                }, { passive: true });
                 
                 masonryItem.addEventListener('touchmove', function(e) {
                     if (e.touches.length === 1) {
@@ -1773,17 +1794,20 @@
                             itemHasMoved = true;
                         }
                     }
-                });
+                }, { passive: true });
                 
                 masonryItem.addEventListener('touchend', function(e) {
                     const touchDuration = new Date().getTime() - touchStartTime;
                     
                     // Single tap to open modal - responsive on mobile/tablet
+                    // Only prevent default if it's actually a tap (not a scroll)
                     if (e.changedTouches.length === 1 && !itemHasMoved && touchDuration < 300) {
+                        // Only prevent default for actual taps, not scrolls
                         e.preventDefault();
+                        e.stopPropagation();
                         openModal(item);
                     }
-                });
+                }, { passive: false });
                 
                 // Click event for desktop
                 masonryItem.addEventListener('click', function(e) {
@@ -2144,11 +2168,55 @@
         // Add event listeners for filter buttons
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const filter = this.getAttribute('data-filter');
-                    // Cleanup video observers before changing filter
-                    cleanupVideoObservers();
-                    filterProjects(filter);
+                // Enhanced touch handling for filter buttons to prevent scroll interference
+                let filterTouchStartTime = 0;
+                let filterHasMoved = false;
+                let filterTouchStartX = 0;
+                let filterTouchStartY = 0;
+                
+                // Touch events for filter buttons
+                btn.addEventListener('touchstart', function(e) {
+                    filterTouchStartTime = new Date().getTime();
+                    filterHasMoved = false;
+                    if (e.touches.length === 1) {
+                        filterTouchStartX = e.touches[0].clientX;
+                        filterTouchStartY = e.touches[0].clientY;
+                    }
+                }, { passive: true });
+                
+                btn.addEventListener('touchmove', function(e) {
+                    if (e.touches.length === 1) {
+                        const moveX = Math.abs(e.touches[0].clientX - filterTouchStartX);
+                        const moveY = Math.abs(e.touches[0].clientY - filterTouchStartY);
+                        
+                        // Allow more movement tolerance for filter buttons to prevent accidental triggers
+                        if (moveX > 15 || moveY > 15) {
+                            filterHasMoved = true;
+                        }
+                    }
+                }, { passive: true });
+                
+                btn.addEventListener('touchend', function(e) {
+                    const touchDuration = new Date().getTime() - filterTouchStartTime;
+                    
+                    // Only trigger filter change if it's a deliberate tap
+                    if (e.changedTouches.length === 1 && !filterHasMoved && touchDuration < 300) {
+                        const filter = this.getAttribute('data-filter');
+                        // Cleanup video observers before changing filter
+                        cleanupVideoObservers();
+                        filterProjects(filter);
+                    }
+                }, { passive: true });
+                
+                // Click event for desktop and fallback
+                btn.addEventListener('click', function(e) {
+                    // Only handle click if it's not a touch device or if touch events didn't handle it
+                    if (!('ontouchstart' in window) || e.detail === 0) {
+                        const filter = this.getAttribute('data-filter');
+                        // Cleanup video observers before changing filter
+                        cleanupVideoObservers();
+                        filterProjects(filter);
+                    }
                 });
             });
             
