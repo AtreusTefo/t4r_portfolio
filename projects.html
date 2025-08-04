@@ -287,7 +287,7 @@
             
             /* Improve masonry item touch behavior */
             .masonry-item {
-                touch-action: pan-y;
+                touch-action: auto;
                 -webkit-tap-highlight-color: transparent;
                 user-select: none;
                 -webkit-user-select: none;
@@ -306,12 +306,16 @@
             
             /* Pinterest-style preview enhancements */
             .masonry-item {
-                transition: all 0.2s ease;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
                 transform-origin: center;
+                will-change: transform;
             }
             
-            .masonry-item:active {
-                transform: scale(0.98);
+            /* Only apply active state on non-touch devices to prevent scroll interference */
+            @media (hover: hover) and (pointer: fine) {
+                .masonry-item:active {
+                    transform: scale(0.98);
+                }
             }
             
             /* Smooth modal transitions */
@@ -388,9 +392,10 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
             border: 1px solid var(--border-color);
+            contain: layout style;
         }
 
         .masonry-item:hover {
@@ -1516,6 +1521,9 @@
         function filterProjects(category) {
             currentFilter = category;
             
+            // Store current scroll position to prevent unwanted jumps
+            const currentScrollY = window.scrollY;
+            
             // Update button styles
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('bg-purple-600', 'text-white');
@@ -1535,10 +1543,24 @@
                 allItemsLoaded = false;
                 isLoading = false;
                 renderMasonryGrid(true);
+                
+                // Restore scroll position after a brief delay to allow content to render
+                setTimeout(() => {
+                    if (Math.abs(window.scrollY - currentScrollY) > 100) {
+                        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+                    }
+                }, 100);
             } else {
                 // Filter regular projects
                 const filteredProjects = projects.filter(project => project.category === category);
                 renderProjects(filteredProjects);
+                
+                // Restore scroll position for non-multimedia filters
+                setTimeout(() => {
+                    if (Math.abs(window.scrollY - currentScrollY) > 100) {
+                        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+                    }
+                }, 50);
             }
         }
 
@@ -1598,6 +1620,22 @@
         let intersectionObserver = null;
         let imageCache = new Map();
         let loadedImages = new Set();
+        let scrollTimeout = null;
+        
+        // Debounced scroll handler to prevent scroll interference
+        function handleScroll() {
+            if (scrollTimeout) {
+                clearTimeout(scrollTimeout);
+            }
+            
+            scrollTimeout = setTimeout(() => {
+                // Allow normal scroll behavior without interference
+                document.body.style.pointerEvents = 'auto';
+            }, 150);
+        }
+        
+        // Add scroll event listener with passive option
+        window.addEventListener('scroll', handleScroll, { passive: true });
         
         // Preload next batch of images for smooth scrolling
         function preloadImages(items) {
@@ -1679,7 +1717,9 @@
                 columnHeights = columns.map(col => {
                     let height = 0;
                     Array.from(col.children).forEach(child => {
-                        height += child.offsetHeight + 20; // 20px gap
+                        // Use getBoundingClientRect for more accurate height calculation
+                        const rect = child.getBoundingClientRect();
+                        height += rect.height + 16; // 16px gap to match CSS
                     });
                     return height;
                 });
@@ -1831,8 +1871,22 @@
                     }, index * 25); // Faster staggered animation
                 }, index * 15); // Reduced delay for faster rendering
                 
-                // Update column height (approximate)
-                columnHeights[shortestColumnIndex] += itemHeight + 80; // 80px for content and gaps
+                // Update column height more accurately
+                // Wait for image/video to load before calculating height
+                const updateHeight = () => {
+                    const rect = masonryItem.getBoundingClientRect();
+                    columnHeights[shortestColumnIndex] += rect.height + 16; // 16px gap
+                };
+                
+                // Update height after content loads
+                const media = masonryItem.querySelector('img, video');
+                if (media) {
+                    media.addEventListener('load', updateHeight, { once: true });
+                    media.addEventListener('loadeddata', updateHeight, { once: true });
+                } else {
+                    // Fallback for immediate update
+                    setTimeout(updateHeight, 100);
+                }
             });
             
             // Setup infinite scroll if not all items loaded
@@ -1869,7 +1923,8 @@
                     }
                 });
             }, {
-                rootMargin: '100px' // Start loading 100px before trigger is visible
+                rootMargin: '50px', // Reduced margin to prevent premature loading
+                threshold: 0.1 // Only trigger when 10% of trigger is visible
             });
             
             intersectionObserver.observe(trigger);
