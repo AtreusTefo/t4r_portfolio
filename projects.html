@@ -1800,14 +1800,14 @@
                     const touchDuration = new Date().getTime() - touchStartTime;
                     
                     // Single tap to open modal - responsive on mobile/tablet
-                    // Only prevent default if it's actually a tap (not a scroll)
+                    // Only trigger modal for deliberate taps, allow scrolling to work normally
                     if (e.changedTouches.length === 1 && !itemHasMoved && touchDuration < 300) {
-                        // Only prevent default for actual taps, not scrolls
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openModal(item);
+                        // Use setTimeout to avoid interfering with scroll momentum
+                        setTimeout(() => {
+                            openModal(item);
+                        }, 0);
                     }
-                }, { passive: false });
+                }, { passive: true });
                 
                 // Click event for desktop
                 masonryItem.addEventListener('click', function(e) {
@@ -2489,9 +2489,13 @@
                 }
             }, { passive: true });
             
-            // Prevent default touch behaviors that might interfere
+            // Only prevent default touch behaviors when actually needed
             mediaContainer.addEventListener('touchmove', function(e) {
-                if (window.innerWidth <= 1024 && (isPinching || isPanning || currentZoom > 1)) {
+                // Only prevent default when actively pinching/panning or zoomed in
+                // This allows normal scrolling when just viewing the modal
+                if (window.innerWidth <= 1024 && isPinching && e.touches.length === 2) {
+                    e.preventDefault();
+                } else if (window.innerWidth <= 1024 && isPanning && currentZoom > 1) {
                     e.preventDefault();
                 }
             }, { passive: false });
