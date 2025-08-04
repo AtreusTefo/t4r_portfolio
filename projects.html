@@ -237,9 +237,23 @@
         
         /* Mobile/Tablet Modal Responsiveness */
         @media (max-width: 1024px) {
-            /* Hide navigation and zoom controls on mobile/tablet */
-            #groupNavigation {
+            /* Hide navigation buttons but keep page indicator on mobile/tablet */
+            #groupNavigation #prevItem,
+            #groupNavigation #nextItem {
                 display: none !important;
+            }
+            
+            /* Keep page indicator visible on mobile/tablet */
+            #groupNavigation {
+                display: block !important;
+            }
+            
+            /* Adjust page indicator position for mobile */
+            #groupNavigation .absolute.top-4.right-4 {
+                top: 8px !important;
+                right: 8px !important;
+                font-size: 12px !important;
+                padding: 4px 8px !important;
             }
             
             #zoomControls {
@@ -417,17 +431,15 @@
 
         @media (max-width: 640px) {
             .masonry-grid {
-                flex-direction: column;
+                flex-direction: row;
+                gap: 8px;
             }
             .masonry-column {
-                width: 100%;
+                width: calc(50% - 4px);
             }
         }
         
         @media (max-width: 640px) {
-            .projects-grid {
-                grid-template-columns: repeat(1, 1fr) !important;
-            }
             .footer-grid {
                 grid-template-columns: repeat(1, 1fr) !important;
                 gap: 1.5rem;
@@ -1618,7 +1630,7 @@
             const screenWidth = window.innerWidth;
             let columnCount;
             if (screenWidth < 640) {
-                columnCount = 1;
+                columnCount = 2;
             } else if (screenWidth < 768) {
                 columnCount = 2;
             } else if (screenWidth < 1024) {
@@ -1969,9 +1981,17 @@
             const totalItems = document.getElementById('totalItems');
             const prevBtn = document.getElementById('prevItem');
             const nextBtn = document.getElementById('nextItem');
+            const groupNavigation = document.getElementById('groupNavigation');
             
             currentItemIndex.textContent = currentGroupIndex + 1;
             totalItems.textContent = currentGroup.length;
+            
+            // Only show page indicator if there are multiple items
+            if (currentGroup.length > 1) {
+                groupNavigation.classList.remove('hidden');
+            } else {
+                groupNavigation.classList.add('hidden');
+            }
             
             // Enable/disable navigation buttons
             prevBtn.disabled = currentGroupIndex === 0;
