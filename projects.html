@@ -1385,7 +1385,7 @@
              {
                  id: 'mm19',
                  title: '3D Cartoon Apple Animation',
-                 image: 'images/Multimedia/Videos/3d 360 camera movement/3D cartoon Apple character.mp4',
+                 image: 'images/Multimedia/Videos/3d%20360%20camera%20movement/3D%20cartoon%20Apple%20character.mp4',
                  aspectRatio: 1.6,
                  category: 'multimedia',
                  type: 'animation',
@@ -1394,7 +1394,7 @@
              {
                  id: 'mm20',
                  title: 'Lemon Animation',
-                 image: 'images/Multimedia/Videos/3d 360 camera movement/Lemon.mp4',
+                 image: 'images/Multimedia/Videos/3d%20360%20camera%20movement/Lemon.mp4',
                  aspectRatio: 1.0,
                  category: 'multimedia',
                  type: 'animation',
@@ -1403,7 +1403,7 @@
              {
                  id: 'mm21',
                  title: 'Orange Animation',
-                 image: 'images/Multimedia/Videos/3d 360 camera movement/Orange.mp4',
+                 image: 'images/Multimedia/Videos/3d%20360%20camera%20movement/Orange.mp4',
                  aspectRatio: 1.0,
                  category: 'multimedia',
                  type: 'animation',
@@ -1412,7 +1412,7 @@
              {
                  id: 'mm22',
                  title: 'NoseZilla Animation',
-                 image: 'images/Multimedia/Videos/NoseZilla Animation.mp4',
+                 image: 'images/Multimedia/Videos/NoseZilla%20Animation.mp4',
                  aspectRatio: 1.6,
                  category: 'multimedia',
                  type: 'animation',
@@ -1502,7 +1502,7 @@
              {
                  id: 'mm42',
                  title: 'Apple Animation',
-                 image: 'images/Multimedia/Videos/Apple Animation.mp4',
+                 image: 'images/Multimedia/Videos/Apple%20Animation.mp4',
                  aspectRatio: 1.0,
                  category: 'multimedia',
                  type: 'animation',
@@ -1511,7 +1511,7 @@
              {
                  id: 'mm43',
                  title: 'Death Note Animation',
-                 image: 'images/Multimedia/Videos/Death note.mp4',
+                 image: 'images/Multimedia/Videos/Death%20note.mp4',
                  aspectRatio: 1.6,
                  category: 'multimedia',
                  type: 'animation',
@@ -1520,7 +1520,7 @@
              {
                  id: 'mm44',
                  title: 'Lip Synchronization Animation',
-                 image: 'images/Multimedia/Videos/Lip synchronization animation.mp4',
+                 image: 'images/Multimedia/Videos/Lip%20synchronization%20animation.mp4',
                  aspectRatio: 1.6,
                  category: 'multimedia',
                  type: 'animation',
@@ -1591,14 +1591,26 @@
                 currentPage = 1;
                 allItemsLoaded = false;
                 isLoading = false;
+                
+                // Disable scroll restoration temporarily to prevent conflicts
+                document.body.style.overflowAnchor = 'none';
+                
                 renderMasonryGrid(true);
                 
-                // Restore scroll position after a brief delay to allow content to render
+                // Only restore scroll position if user was significantly scrolled down
+                // and avoid restoration that might trigger infinite scroll immediately
                 setTimeout(() => {
-                    if (Math.abs(window.scrollY - currentScrollY) > 100) {
-                        window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+                    const shouldRestore = currentScrollY > 200 && 
+                                        Math.abs(window.scrollY - currentScrollY) > 100 &&
+                                        currentScrollY < (document.documentElement.scrollHeight - window.innerHeight - 300);
+                    
+                    if (shouldRestore) {
+                        window.scrollTo({ top: Math.min(currentScrollY, document.documentElement.scrollHeight - window.innerHeight - 100), behavior: 'instant' });
                     }
-                }, 150);
+                    
+                    // Re-enable scroll anchor after restoration
+                    document.body.style.overflowAnchor = 'auto';
+                }, 200);
             } else {
                 // Filter regular projects
                 const filteredProjects = projects.filter(project => project.category === category);
@@ -2063,12 +2075,15 @@
             // Only proceed if we have more items to load
             if (allItemsLoaded) return;
             
-            // Create trigger element with better positioning
-            const trigger = document.createElement('div');
-            trigger.id = 'loadMoreTrigger';
-            trigger.className = 'w-full h-10 flex items-center justify-center opacity-50 transition-opacity duration-300';
-            trigger.innerHTML = '<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>';
-            trigger.dataset.disabled = 'false';
+            // Add delay to prevent immediate triggering after filter switch
+            setTimeout(() => {
+                // Create trigger element with better positioning
+                const trigger = document.createElement('div');
+                trigger.id = 'loadMoreTrigger';
+                trigger.className = 'w-full h-10 flex items-center justify-center opacity-50 transition-opacity duration-300';
+                trigger.innerHTML = '<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>';
+                trigger.dataset.disabled = 'false';
+                trigger.dataset.setupTime = Date.now().toString(); // Track when trigger was set up
             
             const projectsContainer = document.getElementById('projectsContainer');
             const parent = projectsContainer.parentNode;
@@ -2089,35 +2104,39 @@
                 entries.forEach(entry => {
                     const target = entry.target;
                     
-                    // More robust intersection handling
+                    // More robust intersection handling with stricter conditions
                     if (entry.isIntersecting && 
                         !isLoading && 
                         !allItemsLoaded && 
                         target.dataset.disabled !== 'true' &&
-                        entry.intersectionRatio > 0.1) {
+                        entry.intersectionRatio > 0.3 &&
+                        window.scrollY > 100 && // Ensure user has scrolled down before triggering
+                        target.dataset.setupTime && 
+                        Date.now() - parseInt(target.dataset.setupTime) > 1000) { // Ensure trigger has been setup for at least 1 second
                         
                         // Prevent rapid firing with more robust debouncing
                         if (!target.dataset.lastTriggered || 
-                            Date.now() - parseInt(target.dataset.lastTriggered) > 500) {
+                            Date.now() - parseInt(target.dataset.lastTriggered) > 1000) { // Increased debounce time
                             
                             target.dataset.lastTriggered = Date.now().toString();
                             
-                            // Add slight delay to ensure smooth scrolling
+                            // Add delay to ensure smooth scrolling and prevent conflicts
                             setTimeout(() => {
-                                if (!isLoading && !allItemsLoaded) {
+                                if (!isLoading && !allItemsLoaded && window.scrollY > 100) {
                                     loadMoreItems();
                                 }
-                            }, 150);
+                            }, 300); // Increased delay
                         }
                     }
                 });
             }, {
                 root: null,
-                rootMargin: '200px 0px', // Increased margin for earlier loading
-                threshold: [0.1, 0.5] // Simplified thresholds
+                rootMargin: '50px 0px', // Reduced margin to prevent premature triggering
+                threshold: [0.3, 0.7] // Higher thresholds for more precise triggering
             });
             
-            intersectionObserver.observe(trigger);
+                intersectionObserver.observe(trigger);
+            }, 500); // Delay setup to prevent immediate triggering
         }
         
         function loadMoreItems() {
@@ -2154,13 +2173,15 @@
                     const newDocumentHeight = document.documentElement.scrollHeight;
                     const heightDifference = newDocumentHeight - scrollState.documentHeight;
                     
-                    // More intelligent scroll position restoration
-                    if (heightDifference > 0) {
-                        // Content was added, maintain relative position
-                        const targetPosition = scrollState.position;
+                    // More conservative scroll position restoration
+                    if (heightDifference > 0 && scrollState.position > 100) {
+                        // Content was added, maintain relative position but avoid footer area
+                        const maxScrollPosition = newDocumentHeight - window.innerHeight - 200; // Stay away from footer
+                        const targetPosition = Math.min(scrollState.position, maxScrollPosition);
                         
-                        // Only restore if position changed significantly
-                        if (Math.abs(window.pageYOffset - targetPosition) > 50) {
+                        // Only restore if position changed significantly and we're not near the bottom
+                        if (Math.abs(window.pageYOffset - targetPosition) > 50 && 
+                            targetPosition < maxScrollPosition) {
                             window.scrollTo({
                                 top: targetPosition,
                                 behavior: 'instant'
@@ -2179,8 +2200,8 @@
                             trigger.style.opacity = '0.5';
                             trigger.dataset.disabled = 'false';
                         }
-                    }, 50);
-                }, 200); // Increased time for layout stabilization
+                    }, 100); // Reduced cleanup delay
+                }, 300); // Increased time for layout stabilization
             }, 100); // Reduced initial delay for better responsiveness
         }
         
