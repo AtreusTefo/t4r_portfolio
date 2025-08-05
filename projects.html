@@ -459,9 +459,31 @@
             .masonry-grid {
                 flex-direction: row;
                 gap: 8px;
+                padding: 16px 0;
             }
             .masonry-column {
                 width: calc(50% - 4px);
+                flex: none; /* Prevent flex from overriding width */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .masonry-grid {
+                gap: 6px;
+                padding: 12px 0;
+            }
+            .masonry-column {
+                width: calc(50% - 3px);
+                gap: 6px;
+            }
+            .masonry-item-content {
+                padding: 6px 10px;
+            }
+            .masonry-item-title {
+                font-size: 13px;
+            }
+            .masonry-item-type {
+                font-size: 11px;
             }
         }
         
@@ -1648,6 +1670,8 @@
         let imageCache = new Map();
         let loadedImages = new Set();
         let scrollTimeout = null;
+        let heightCalculationQueue = new Set();
+        let layoutStabilizationTimeout = null;
         
         // Debounced scroll handler to prevent scroll interference
         function handleScroll() {
@@ -1737,6 +1761,10 @@
                 allItemsLoaded = false;
                 isLoading = false;
                 loadedImages.clear();
+                // Clear any pending height calculations
+                if (window.heightCalculationTimeout) {
+                    clearTimeout(window.heightCalculationTimeout);
+                }
             }
             
             projectsContainer.className = 'masonry-grid';
@@ -1744,8 +1772,10 @@
             // Determine number of columns based on screen size
             const screenWidth = window.innerWidth;
             let columnCount;
-            if (screenWidth < 640) {
-                columnCount = 2;
+            if (screenWidth < 480) {
+                columnCount = 2; // Ensure 2 columns on small mobile devices
+            } else if (screenWidth < 640) {
+                columnCount = 2; // 2 columns on mobile devices
             } else if (screenWidth < 768) {
                 columnCount = 2;
             } else if (screenWidth < 1024) {
@@ -1768,14 +1798,14 @@
                     projectsContainer.appendChild(column);
                 }
             } else {
-                // Use existing columns and calculate current heights
+                // Use existing columns and calculate current heights more reliably
                 columns = Array.from(projectsContainer.children);
                 columnHeights = columns.map(col => {
                     let height = 0;
                     Array.from(col.children).forEach(child => {
-                        // Use getBoundingClientRect for more accurate height calculation
-                        const rect = child.getBoundingClientRect();
-                        height += rect.height + 16; // 16px gap to match CSS
+                        // Force layout calculation and use offsetHeight for consistency
+                        child.style.display = 'block';
+                        height += child.offsetHeight + 16; // 16px gap to match CSS
                     });
                     return height;
                 });
@@ -1927,47 +1957,92 @@
                     }, index * 25); // Faster staggered animation
                 }, index * 15); // Reduced delay for faster rendering
                 
-                // Track if height has been updated to prevent double counting
-                let heightUpdated = false;
+                // Track height calculation state more reliably
+                let heightCalculated = false;
+                const itemId = `item_${Date.now()}_${Math.random()}`;
+                masonryItem.dataset.itemId = itemId;
                 
-                // Update column height more accurately
-                const updateHeight = () => {
-                    if (heightUpdated) return; // Prevent double counting
+                // More accurate height calculation with debouncing and queue management
+                const calculateActualHeight = () => {
+                    if (heightCalculated || !masonryItem.parentNode || heightCalculationQueue.has(itemId)) return;
                     
-                    const rect = masonryItem.getBoundingClientRect();
-                    if (rect.height > 0) {
-                        columnHeights[shortestColumnIndex] += rect.height + 16; // 16px gap
-                        heightUpdated = true;
-                    }
+                    heightCalculationQueue.add(itemId);
+                    
+                    // Use requestAnimationFrame for better timing
+                    requestAnimationFrame(() => {
+                        if (!masonryItem.parentNode) {
+                            heightCalculationQueue.delete(itemId);
+                            return;
+                        }
+                        
+                        // Force layout recalculation
+                        const actualHeight = masonryItem.offsetHeight;
+                        if (actualHeight > 0) {
+                            // Update column height tracking more accurately
+                            const currentColumnHeight = columnHeights[shortestColumnIndex] || 0;
+                            columnHeights[shortestColumnIndex] = currentColumnHeight - estimatedHeight + actualHeight + 16;
+                            heightCalculated = true;
+                            
+                            // Mark item as height-calculated
+                            masonryItem.dataset.heightCalculated = 'true';
+                        }
+                        
+                        heightCalculationQueue.delete(itemId);
+                    });
                 };
                 
-                // Initial height estimation to prevent layout shifts
-                const estimatedHeight = baseWidth * item.aspectRatio + 60; // 60px for content padding
+                // Initial height estimation (more conservative)
+                const estimatedHeight = Math.max(200, baseWidth * item.aspectRatio * 0.8) + 60;
                 columnHeights[shortestColumnIndex] += estimatedHeight;
                 
-                // Update height after content loads and adjust the difference
+                // Handle media loading with better error handling
                 const media = masonryItem.querySelector('img, video');
                 if (media) {
-                    const adjustHeight = () => {
-                        if (heightUpdated) return;
+                    let mediaLoaded = false;
+                    
+                    const handleMediaLoad = () => {
+                        if (mediaLoaded) return;
+                        mediaLoaded = true;
                         
-                        const rect = masonryItem.getBoundingClientRect();
-                        if (rect.height > 0) {
-                            // Remove estimated height and add actual height
-                            columnHeights[shortestColumnIndex] -= estimatedHeight;
-                            columnHeights[shortestColumnIndex] += rect.height + 16;
-                            heightUpdated = true;
+                        // Clear any existing timeout for this item
+                        if (window.heightCalculationTimeout) {
+                            clearTimeout(window.heightCalculationTimeout);
                         }
+                        
+                        // Debounce height calculation to prevent race conditions
+                        window.heightCalculationTimeout = setTimeout(() => {
+                            calculateActualHeight();
+                            
+                            // Trigger layout stabilization after all items are processed
+                            if (layoutStabilizationTimeout) {
+                                clearTimeout(layoutStabilizationTimeout);
+                            }
+                            layoutStabilizationTimeout = setTimeout(() => {
+                                // Final layout check and scroll position adjustment
+                                const currentScroll = window.pageYOffset;
+                                if (currentScroll > 0) {
+                                    window.scrollTo({
+                                        top: currentScroll,
+                                        behavior: 'instant'
+                                    });
+                                }
+                            }, 100);
+                        }, 50);
                     };
                     
-                    media.addEventListener('load', adjustHeight, { once: true });
-                    media.addEventListener('loadeddata', adjustHeight, { once: true });
+                    media.addEventListener('load', handleMediaLoad, { once: true });
+                    media.addEventListener('loadeddata', handleMediaLoad, { once: true });
+                    media.addEventListener('error', handleMediaLoad, { once: true });
                     
-                    // Fallback timeout
-                    setTimeout(adjustHeight, 500);
+                    // Fallback with longer timeout
+                    setTimeout(() => {
+                        if (!mediaLoaded) {
+                            handleMediaLoad();
+                        }
+                    }, 1000);
                 } else {
-                    // For items without media, mark as updated
-                    heightUpdated = true;
+                    // For items without media, calculate height after DOM insertion
+                    setTimeout(calculateActualHeight, 100);
                 }
             });
             
@@ -1993,17 +2068,18 @@
             trigger.id = 'loadMoreTrigger';
             trigger.className = 'w-full h-10 flex items-center justify-center opacity-50 transition-opacity duration-300';
             trigger.innerHTML = '<div class="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>';
+            trigger.dataset.disabled = 'false';
             
             const projectsContainer = document.getElementById('projectsContainer');
             const parent = projectsContainer.parentNode;
             
             // Insert trigger after projects container with proper spacing
             const spacer = document.createElement('div');
-            spacer.className = 'h-8'; // Add some space
+            spacer.className = 'h-8 infinite-scroll-spacer'; // Add identifier for cleanup
             parent.insertBefore(spacer, projectsContainer.nextSibling);
             parent.insertBefore(trigger, spacer.nextSibling);
             
-            // Setup intersection observer with better configuration
+            // Setup intersection observer with improved configuration
             if (intersectionObserver) {
                 intersectionObserver.disconnect();
                 intersectionObserver = null;
@@ -2011,21 +2087,34 @@
             
             intersectionObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting && !isLoading && !allItemsLoaded) {
-                        // Add small delay to prevent rapid firing
-                        if (!entry.target.dataset.triggered) {
-                            entry.target.dataset.triggered = 'true';
+                    const target = entry.target;
+                    
+                    // More robust intersection handling
+                    if (entry.isIntersecting && 
+                        !isLoading && 
+                        !allItemsLoaded && 
+                        target.dataset.disabled !== 'true' &&
+                        entry.intersectionRatio > 0.1) {
+                        
+                        // Prevent rapid firing with more robust debouncing
+                        if (!target.dataset.lastTriggered || 
+                            Date.now() - parseInt(target.dataset.lastTriggered) > 500) {
+                            
+                            target.dataset.lastTriggered = Date.now().toString();
+                            
+                            // Add slight delay to ensure smooth scrolling
                             setTimeout(() => {
-                                loadMoreItems();
-                                entry.target.dataset.triggered = 'false';
-                            }, 100);
+                                if (!isLoading && !allItemsLoaded) {
+                                    loadMoreItems();
+                                }
+                            }, 150);
                         }
                     }
                 });
             }, {
                 root: null,
-                rootMargin: '100px 0px', // Only vertical margin
-                threshold: [0, 0.25, 0.5, 0.75, 1] // Multiple thresholds for better control
+                rootMargin: '200px 0px', // Increased margin for earlier loading
+                threshold: [0.1, 0.5] // Simplified thresholds
             });
             
             intersectionObserver.observe(trigger);
@@ -2038,43 +2127,71 @@
             const trigger = document.getElementById('loadMoreTrigger');
             if (trigger) {
                 trigger.style.opacity = '1';
+                // Temporarily disable trigger to prevent rapid firing
+                trigger.dataset.disabled = 'true';
             }
             
-            // Store current scroll position to prevent jumps
-            const scrollPosition = window.pageYOffset;
-            const documentHeight = document.documentElement.scrollHeight;
+            // Store comprehensive scroll state
+            const scrollState = {
+                position: window.pageYOffset,
+                documentHeight: document.documentElement.scrollHeight,
+                viewportHeight: window.innerHeight,
+                scrollRatio: window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)
+            };
             
-            // Simulate network delay for smooth UX (like Pinterest)
+            // Disable scroll restoration during loading to prevent conflicts
+            document.body.style.overflowAnchor = 'none';
+            
+            // Load new items with improved timing
             setTimeout(() => {
                 currentPage++;
+                
+                // Render new items
                 renderMasonryGrid(false);
                 
-                // Check for scroll position changes after rendering
+                // Wait for layout to stabilize before scroll restoration
                 setTimeout(() => {
-                    const newScrollPosition = window.pageYOffset;
                     const newDocumentHeight = document.documentElement.scrollHeight;
+                    const heightDifference = newDocumentHeight - scrollState.documentHeight;
                     
-                    // If scroll position changed unexpectedly, restore it
-                    if (Math.abs(newScrollPosition - scrollPosition) > 100) {
-                        window.scrollTo({
-                            top: scrollPosition,
-                            behavior: 'instant'
-                        });
+                    // More intelligent scroll position restoration
+                    if (heightDifference > 0) {
+                        // Content was added, maintain relative position
+                        const targetPosition = scrollState.position;
+                        
+                        // Only restore if position changed significantly
+                        if (Math.abs(window.pageYOffset - targetPosition) > 50) {
+                            window.scrollTo({
+                                top: targetPosition,
+                                behavior: 'instant'
+                            });
+                        }
                     }
                     
-                    isLoading = false;
+                    // Re-enable scroll anchor
+                    document.body.style.overflowAnchor = 'auto';
                     
-                    if (trigger && !allItemsLoaded) {
-                        trigger.style.opacity = '0.5';
-                    }
-                }, 150); // Allow time for layout to settle
-            }, 250); // Slightly increased delay for better stability
+                    // Final cleanup
+                    setTimeout(() => {
+                        isLoading = false;
+                        
+                        if (trigger && !allItemsLoaded) {
+                            trigger.style.opacity = '0.5';
+                            trigger.dataset.disabled = 'false';
+                        }
+                    }, 50);
+                }, 200); // Increased time for layout stabilization
+            }, 100); // Reduced initial delay for better responsiveness
         }
         
         function removeLoadMoreTrigger() {
-            // Clean up intersection observer
+            // Clean up intersection observer with proper error handling
             if (intersectionObserver) {
-                intersectionObserver.disconnect();
+                try {
+                    intersectionObserver.disconnect();
+                } catch (e) {
+                    console.warn('Error disconnecting intersection observer:', e);
+                }
                 intersectionObserver = null;
             }
             
@@ -2084,16 +2201,25 @@
                 trigger.remove();
             }
             
-            // Remove any spacer elements that might have been added
-            const spacers = document.querySelectorAll('.h-8');
+            // Remove spacer elements more precisely
+            const spacers = document.querySelectorAll('.infinite-scroll-spacer, .h-8');
             spacers.forEach(spacer => {
-                // Only remove spacers that are likely from our infinite scroll setup
-                if (spacer.nextElementSibling && spacer.nextElementSibling.id === 'loadMoreTrigger') {
-                    spacer.remove();
-                } else if (spacer.previousElementSibling && spacer.previousElementSibling.id === 'projectsContainer') {
+                // Remove spacers that are part of infinite scroll setup
+                if (spacer.classList.contains('infinite-scroll-spacer') ||
+                    (spacer.nextElementSibling && spacer.nextElementSibling.id === 'loadMoreTrigger') ||
+                    (spacer.previousElementSibling && spacer.previousElementSibling.id === 'projectsContainer')) {
                     spacer.remove();
                 }
             });
+            
+            // Clear any pending height calculations and queues
+            if (window.heightCalculationTimeout) {
+                clearTimeout(window.heightCalculationTimeout);
+            }
+            if (layoutStabilizationTimeout) {
+                clearTimeout(layoutStabilizationTimeout);
+            }
+            heightCalculationQueue.clear();
         }
 
         // Modal functionality
